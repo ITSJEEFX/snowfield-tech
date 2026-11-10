@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SnowField Tech</title>
+<meta name="description" content="Comissionamento, preventiva e manutenção de refrigeração e climatização, com relatórios em PDF.">
+<meta name="theme-color" content="#0C1A21">
+<meta name="color-scheme" content="dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SnowField">
+<link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px);background:#0C1A21}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#0C1A21;color:#EEF5F8}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/inter-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/inter-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/inter-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/inter-latin-700-normal.woff2) format('woff2')}</style>
+</head>
+<body>
+<style>
+/* Layout: coluna única de app de campo (máx. 480px), cabeçalho fixo no topo e barra de ação fixa embaixo; vidro translúcido sobre fundo azul-noite */
+:root{
+  --bg:#0C1A21; --glow:#24485A; --fg:#EEF5F8; --muted:#A9BEC8; --soft:#C9D8DF;
+  --surface:rgba(255,255,255,.06); --surface-2:rgba(255,255,255,.1); --line:rgba(255,255,255,.14);
+  --accent:#BCE4F2; --on-accent:#0C1A21; --accent-soft:rgba(188,228,242,.12); --accent-line:rgba(188,228,242,.45);
+  --ok:#7FE0A8; --ok-soft:rgba(127,224,168,.15); --warn:#F5C670; --warn-soft:rgba(245,198,112,.15); --bad:#FF9A8F; --bad-soft:rgba(255,154,143,.15);
+  --splash-1:#2A5468; --splash-2:#12262F; --splash-3:#0A161C;
+  --bar:rgba(12,26,33,.88); --paper:#FFFFFF; --ink:#13202A;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --r-lg:22px; --r-md:16px; --pill:999px;
+  color-scheme:dark;
+}
+html,body{min-height:100%}
+body{background:var(--bg) radial-gradient(130% 50% at 85% -5%, var(--glow) 0%, var(--bg) 60%) no-repeat;background-attachment:fixed;color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bar)}
+*{box-sizing:border-box}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.btn,label.icon-btn{position:relative;overflow:hidden}
+.pick{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px;z-index:1;margin:0;padding:0;border:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.app{max-width:480px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));min-height:100%;display:flex;flex-direction:column}
+.view{display:flex;flex-direction:column;gap:16px;padding-block:0 24px;flex:1}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-.3px}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:12px;padding-block:14px 10px;margin-inline:-16px;padding-inline:16px;background:var(--bar);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.bar-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.bar-t h1{font-size:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-t p{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand{font-size:22px!important;font-weight:700!important}
+.icon-btn{width:44px;height:44px;flex:none;border-radius:22px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pill-tag{font-size:13px;font-weight:600;color:var(--on-accent);background:var(--accent);padding:6px 12px;border-radius:var(--pill)}
+.glass{border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:18px}
+.hero{display:flex;flex-direction:column;gap:12px}
+.hero h2{font-size:26px;font-weight:600}
+.h2{font-size:17px;font-weight:600}
+.btn{min-height:48px;padding:0 20px;border-radius:var(--pill);border:1px solid var(--line);background:var(--surface);font-weight:600;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;text-decoration:none}
+.foot.foot-rel{position:static;background:none;padding-top:4px;margin-top:4px}
+a.btn{color:var(--fg)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border:0}
+.btn.dashed{border:1px dashed var(--accent-line);background:transparent;color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad-soft)}
+.btn.block{width:100%}
+.btn.big{min-height:56px;font-size:16px;justify-content:space-between;padding:0 22px 0 26px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.hero .btn{align-self:flex-start}
+.list{display:flex;flex-direction:column;gap:10px}
+.oscard{width:100%;text-align:left;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);padding:14px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+.oscard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.oscard .t{font-size:15px;font-weight:600}
+.badge{font-size:11px;font-weight:600;padding:4px 9px;border-radius:var(--pill);white-space:nowrap}
+.badge.warn{color:var(--warn);background:var(--warn-soft)} .badge.ok{color:var(--ok);background:var(--ok-soft)} .badge.ex{color:var(--accent);background:var(--accent-soft)}
+.empty{border:1px dashed var(--line);border-radius:18px;padding:24px;text-align:center;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>span,.legend{font-size:13px;font-weight:600;color:var(--soft)}
+.inp{width:100%;min-height:50px;border-radius:14px;border:1px solid var(--line);background:var(--surface);padding:0 14px;outline:none}
+textarea.inp{padding:12px 14px;resize:vertical;min-height:84px}
+.inp::placeholder{color:#8FA6B2}
+.inp:focus{border-color:var(--accent-line)}
+.err{color:var(--bad);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 18px;border-radius:var(--pill);border:1px solid var(--line);background:var(--surface);font-weight:500;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:transparent;font-weight:600}
+.radio{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.radio:has(input:checked){border-color:var(--accent-line);background:var(--accent-soft)}
+.radio input{width:20px;height:20px;accent-color:var(--accent);margin:0;flex:none}
+.radio b{display:block;font-size:15px} .radio small{color:var(--muted);font-size:13px}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+legend{padding:0;margin-bottom:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mf{border-radius:16px;border:1px solid var(--line);background:var(--surface);padding:10px 14px;display:flex;flex-direction:column;gap:2px;cursor:text}
+.mf span.l{font-size:12px;color:var(--muted)}
+.mf .row{display:flex;align-items:baseline;gap:6px}
+.mf input{width:0;flex:1;border:0;outline:none;background:transparent;font-size:24px;font-weight:600;padding:0;min-height:34px}
+.mf:focus-within{border-color:var(--accent-line)}
+.mf em{font-style:normal;font-size:12px;color:var(--muted)}
+.steps{display:grid;gap:6px;margin-top:-4px}
+.step{border:0;background:transparent;padding:6px 0 0;display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:500;color:var(--muted);text-align:left;cursor:pointer;min-height:44px}
+.step i{height:4px;border-radius:2px;background:var(--line)}
+.step.done{color:var(--ok)} .step.done i{background:var(--ok)}
+.step.on{color:var(--accent);font-weight:600} .step.on i{background:var(--accent)}
+.result{border-radius:var(--r-lg);border:1px solid var(--accent-line);background:var(--accent-soft);padding:16px;display:flex;flex-direction:column;gap:14px}
+.result .k{font-size:12px;color:var(--soft)}
+.result .v{font-size:32px;font-weight:600;line-height:1.15}
+.result .s{font-size:11px;color:var(--muted)}
+.v.low,.v.high{color:var(--warn)}
+.diag{display:flex;gap:10px;align-items:flex-start;border-radius:16px;padding:12px 14px}
+.diag.ok{background:var(--ok-soft)} .diag.warn{background:var(--warn-soft)} .diag.bad{background:var(--bad-soft)}
+.diag svg{flex:none;margin-top:1px}
+.diag b{display:block;font-size:14px}
+.diag span{font-size:13px;color:var(--soft)}
+.note{font-size:12px;color:var(--muted)}
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 66px);z-index:6;transform:translate(-50%,-80px);display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:999px;background:#14272F;border:1px solid var(--line);font-size:13px;font-weight:500;color:var(--soft);box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;opacity:0;white-space:nowrap}
+.ptr.anim{transition:transform .25s ease,opacity .25s ease}
+.ptr .ring{width:30px;height:30px;border-radius:15px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.ptr.spin .ring svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ptr-hint{align-self:center;display:flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);font-size:12px;padding:6px 10px;margin-top:-8px;cursor:pointer;min-height:36px}
+.result.flash{animation:flash .7s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 0 rgba(188,228,242,.55)}100%{box-shadow:0 0 0 14px rgba(188,228,242,0)}}
+.foot{position:sticky;bottom:0;z-index:4;margin-inline:-16px;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 70%,transparent);display:flex;flex-direction:column;gap:10px;margin-top:auto}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);padding:4px;border-radius:var(--pill);border:1px solid var(--line);background:var(--surface)}
+.seg button{min-height:44px;border:0;border-radius:var(--pill);background:transparent;color:var(--soft);font-size:14px;font-weight:500;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);font-weight:600}
+.segbtn{position:relative;overflow:hidden;min-height:44px;border-radius:var(--pill);display:flex;align-items:center;justify-content:center;gap:8px;color:var(--soft);font-size:14px;font-weight:500;cursor:pointer}
+.segbtn.on{background:var(--accent);color:var(--on-accent);font-weight:600}
+.photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ph{margin:0;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#1B2F38}
+.ph .cap{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 10px}
+.ph input{flex:1;min-width:0;border:0;background:transparent;outline:none;font-size:13px;min-height:40px}
+.ph button{width:40px;height:40px;border:0;background:transparent;color:var(--muted);border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.check{border-radius:18px;border:1px solid var(--line);background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.check.at{border-color:rgba(245,198,112,.45);background:rgba(245,198,112,.06)}
+.check.nc{border-color:rgba(255,154,143,.5);background:rgba(255,154,143,.06)}
+.check.ok{border-color:rgba(127,224,168,.35)}
+.check h3{font-size:15px;font-weight:600}
+.tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tri button{min-height:44px;border-radius:var(--pill);border:1px solid var(--line);background:transparent;color:var(--soft);font-size:13px;font-weight:500;cursor:pointer}
+.tri button[aria-pressed="true"].ok{background:var(--ok-soft);color:var(--ok);border-color:transparent;font-weight:600}
+.tri button[aria-pressed="true"].at{background:var(--warn-soft);color:var(--warn);border-color:transparent;font-weight:600}
+.tri button[aria-pressed="true"].nc{background:var(--bad-soft);color:var(--bad);border-color:transparent;font-weight:600}
+.check .sub{display:flex;gap:8px;align-items:center}
+.check .sub input{flex:1;min-width:0;min-height:44px;border-radius:12px;border:1px solid var(--line);background:transparent;padding:0 12px;outline:none;font-size:14px}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.thumbs img{width:52px;height:52px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.progress{display:flex;flex-direction:column;gap:8px}
+.progress .tr{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.progress .tr i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.rows{display:flex;flex-direction:column;gap:8px}
+.rows div{display:flex;justify-content:space-between;gap:12px;font-size:14px}
+.rows dt,.rows .a{color:var(--muted)}
+.rows .b{text-align:right;min-width:0;overflow-wrap:anywhere}
+.qlist{display:flex;flex-direction:column;gap:6px}
+.qitem{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.qitem span{flex:1}
+.qitem button{width:40px;height:40px;border:0;background:transparent;color:var(--muted);cursor:pointer;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.inline{display:flex;gap:8px;align-items:flex-end}
+.inline .field{flex:1}
+.chart{width:100%;height:auto;display:block}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.chart .ar{fill:var(--accent-soft)}
+.chart .dt{fill:var(--accent)}
+.chart .tg{stroke:var(--ok);stroke-dasharray:4 4;stroke-width:1.2}
+.chart .gd{stroke:var(--line);stroke-width:1}
+.chart text{fill:var(--muted);font-size:10px;font-family:var(--font)}
+.sigwrap{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--paper);position:relative;touch-action:none}
+.sigwrap canvas{display:block;width:100%;height:170px}
+.sigwrap .hint{position:absolute;left:14px;bottom:10px;font-size:12px;color:#5A6B76;pointer-events:none}
+.logo-prev{display:flex;align-items:center;gap:12px}
+.logo-prev .box{width:84px;height:56px;border-radius:12px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;background:var(--paper);overflow:hidden;color:#5A6B76;font-size:11px}
+.logo-prev img{max-width:100%;max-height:100%}
+.warnbox{border-radius:16px;padding:12px 14px;background:var(--warn-soft);color:var(--warn);font-size:13px}
+.splash{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;position:relative;padding-block:24px;animation:none}
+.splash::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(110% 70% at 70% 20%,var(--splash-1) 0%,var(--splash-2) 45%,var(--splash-3) 100%)}
+.splash .bgflake{position:fixed;left:-40px;top:140px;width:620px;height:620px;opacity:.16;pointer-events:none;z-index:-1}
+.splash .card{position:relative;width:300px;max-width:100%;box-sizing:border-box;border-radius:32px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:44px 28px 32px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.splash h1{font-size:40px;font-weight:500;letter-spacing:-.5px;line-height:1;display:flex;flex-direction:column;align-items:center;gap:6px;margin:2px 0 10px}
+.splash h1 span{font-size:13px;font-weight:600;letter-spacing:.5em;margin-right:-.5em;line-height:1;color:var(--accent);opacity:.85}
+.splash .tag{font-size:16px;font-weight:500;color:var(--accent)}
+.splash .lead{margin:6px 0 22px;font-size:14px;line-height:1.6;color:var(--soft)}
+.splash .go{width:100%;height:56px;border:0;border-radius:var(--pill);background:var(--accent);color:var(--on-accent);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 28px;cursor:pointer}
+.splash .link{font-size:14px;font-weight:500;color:var(--accent);text-decoration:none;padding:10px;background:none;border:0;cursor:pointer}
+.splash .dots{margin-top:28px;display:flex;gap:8px}
+.splash .dots span{width:8px;height:8px;border-radius:4px;background:rgba(255,255,255,.3)}
+.splash .dots span:first-child{width:22px;background:var(--accent)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:30;max-width:min(440px,calc(100% - 32px));background:#E8F3F7;color:#0C1A21;padding:12px 16px;border-radius:16px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.modal{position:fixed;inset:0;z-index:40;background:rgba(5,12,16,.7);display:flex;align-items:flex-end;justify-content:center;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.modal .glass{background:#14272F;width:100%;max-width:440px;display:flex;flex-direction:column;gap:14px}
+.sug{display:flex;flex-direction:column;gap:6px;margin-top:-8px}
+.sug:empty{display:none}
+.sug-i{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column;gap:2px;cursor:pointer;width:100%}
+.sug-i b{font-size:15px;font-weight:600} .sug-i small{color:var(--muted);font-size:12px}
+.sug-i.exact{border-color:var(--accent-line);background:var(--accent-soft)}
+.sel-cli{display:flex;align-items:center;gap:10px;min-height:50px;border-radius:14px;border:1px solid var(--accent-line);background:var(--accent-soft);padding:8px 8px 8px 14px}
+.sel-cli div{flex:1;min-width:0;display:flex;flex-direction:column} .sel-cli b{font-size:15px} .sel-cli small{color:var(--muted);font-size:12px}
+.ck-h{display:flex;align-items:flex-start;gap:8px} .ck-h h3{flex:1;min-width:0}
+.ck-x{width:36px;height:36px;flex:none;border:0;background:transparent;color:var(--muted);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:-8px -8px -6px 0}
+.pickseg.sm .segbtn{min-height:40px;font-size:13px}
+.eq{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+.eq div{flex:1;min-width:0;display:flex;flex-direction:column} .eq b{font-size:15px;font-weight:600} .eq small{color:var(--muted);font-size:12px}
+.eq .ck-x{margin:0}
+.space{display:flex;align-items:center;gap:12px;border-radius:16px;border:1px solid var(--line);background:var(--surface);padding:12px 12px 12px 16px}
+.space div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .space b{font-size:14px} .space span{font-size:12px;color:var(--muted)}
+.space.ok{border-color:rgba(127,224,168,.35)} .space.warn{border-color:rgba(245,198,112,.45);background:var(--warn-soft)}
+.space .btn{min-height:40px;padding:0 14px;font-size:13px;flex:none}
+.tipos{display:flex;flex-direction:column;gap:10px}
+.tipo-opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 14px;border-radius:18px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.tipo-opt .ic{width:48px;height:48px;flex:none;border-radius:16px;border:1px solid var(--accent-line);background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.tipo-opt>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tipo-opt b{font-size:15px;font-weight:600} .tipo-opt small{font-size:13px;color:var(--muted)}
+.tipo-opt>svg{flex:none;color:var(--muted)}
+.modal .acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.home{gap:0}
+.hm-top{display:flex;align-items:center;gap:10px;padding:24px 4px 12px}
+.hm-brand{flex:1;min-width:0;display:flex;flex-direction:column}
+.hm-brand span{font-size:22px;font-weight:500;letter-spacing:-.3px}
+.hm-brand small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-av{width:44px;height:44px;flex:none;border-radius:22px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hm-main{flex:1;padding:6px 4px 18px;display:flex;flex-direction:column;gap:18px}
+.hm-hero{border-radius:24px;border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:20px;display:flex;flex-direction:column;gap:14px}
+.hm-hero h1{font-size:28px;font-weight:500;line-height:1.15}
+.hm-hero p{font-size:14px;color:var(--muted);line-height:1.45}
+.hm-new{align-self:flex-start;height:48px;padding:0 20px;border:0;border-radius:var(--pill);background:var(--accent);color:var(--on-accent);font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;cursor:pointer}
+.hm-short{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 0;justify-items:center}
+.hm-short button{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:transparent;padding:0;font-size:11.5px;font-weight:500;letter-spacing:-.15px;cursor:pointer;white-space:nowrap;width:100%;overflow:visible}
+@media (max-width:380px){.hm-short .ic{width:58px!important;height:58px!important}.hm-short button{font-size:11px;letter-spacing:-.2px}}
+@media (max-width:400px){.hm-short button{white-space:normal;text-align:center;line-height:1.25;hyphens:manual}}
+.hm-short .ic{width:64px;height:64px;border-radius:20px;border:1px solid var(--line);background:var(--surface);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.hm-short .ic.hi{border-color:var(--accent-line);background:var(--accent-soft)}
+.hm-list{display:flex;flex-direction:column;gap:10px}
+.hm-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.hm-h h2{font-size:19px;font-weight:500}
+.hm-link{border:0;background:transparent;color:var(--accent);font-size:13px;font-weight:500;padding:8px 0;cursor:pointer}
+.hm-nav{position:sticky;bottom:calc(20px + env(safe-area-inset-bottom,0px));margin-top:auto;height:68px;border-radius:24px;border:1px solid var(--line);background:rgba(20,40,50,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));z-index:4}
+.hm-nav button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer}
+.hm-nav .ni{height:28px;display:flex;align-items:center;justify-content:center}
+.hm-nav [aria-current]{color:var(--accent);font-weight:600}
+.hm-nav [aria-current] .ni{width:36px;border-radius:14px;background:rgba(188,228,242,.18)}
+.home.view{padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+/* ---- tela do ciclo ---- */
+:root{--c-hot:#FF8A70;--c-warm:#F5C670;--c-cold:#4FB3F0;--c-cool:#BCE4F2;--pipe-hi:rgba(255,138,112,.3);--pipe-lo:rgba(79,179,240,.32)}
+.cy-intro{font-size:14px;color:var(--soft);line-height:1.5}
+.cy-stage{padding:10px 8px 12px}
+.cy-stage svg{display:block;width:100%;height:auto}
+.cy-stage .pipe{fill:none;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;transition:opacity .3s}
+.cy-stage .pipe.hi{stroke:var(--pipe-hi)} .cy-stage .pipe.lo{stroke:var(--pipe-lo)}
+.cp{cursor:pointer;transition:opacity .3s}
+.cp rect{stroke-width:1.3;transition:stroke-width .3s}
+.cp.hi rect{fill:#2E2A2C;stroke:rgba(255,138,112,.75)}
+.cp.lo rect{fill:#16303F;stroke:rgba(79,179,240,.8)}
+.cp.nt rect{fill:#1F2C33;stroke:rgba(255,255,255,.32)}
+.cp .t{font:600 13px var(--font);fill:var(--fg)}
+.cp .s{font:400 10.5px var(--font);fill:var(--muted)}
+.cp:focus{outline:none}.cp:focus-visible rect{stroke:var(--accent);stroke-width:2.4}
+.gg circle{fill:var(--bg);stroke:var(--muted);stroke-width:1.2}
+.gg text{font:600 9px var(--font);fill:var(--fg)}
+.gg,.heat,.cy-lbl{transition:opacity .3s}
+.cy-lbl{font:500 10.5px var(--font);fill:var(--muted)}
+.cy-side{font:600 10px var(--font);letter-spacing:.1em}
+.grp{fill:none;stroke:rgba(255,255,255,.18);stroke-dasharray:5 5}
+.grp-t{font:600 9.5px var(--font);letter-spacing:.1em;fill:var(--muted)}
+.heat path{fill:none;stroke-width:1.8;stroke-linecap:round}
+.heat.out path{stroke:var(--c-hot)} .heat.in path{stroke:var(--c-cold)}
+.focus .dim{opacity:.2} .focus .dim.on{opacity:1}
+.focus .cp.on rect{stroke-width:2.6}
+@media (prefers-reduced-motion:no-preference){.heat path{animation:rise 1.8s ease-in-out infinite}.heat path:nth-child(2){animation-delay:.6s}.heat path:nth-child(3){animation-delay:1.2s}}
+@keyframes rise{0%{transform:translateY(5px);opacity:0}40%{opacity:1}100%{transform:translateY(-5px);opacity:0}}
+.cy-leg{display:flex;flex-wrap:wrap;gap:6px 14px;padding:10px 6px 0;font-size:11.5px;color:var(--muted)}
+.cy-leg span{display:inline-flex;align-items:center;gap:6px}
+.cy-leg i{display:inline-block}
+.cy-card{display:flex;flex-direction:column;gap:14px}
+.cy-nav{display:flex;align-items:center;gap:10px}
+.cy-name{flex:1;min-width:0;text-align:center;display:flex;flex-direction:column;gap:2px}
+.cy-name h2{font-size:21px;font-weight:600}
+.cy-desc{font-size:14.5px;line-height:1.55}
+.cy-tip{border-top:1px solid var(--line);padding-top:12px;font-size:13.5px;color:var(--soft);line-height:1.5}
+.cy-tip b{display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.badge.hi{color:var(--c-hot);background:rgba(255,138,112,.14)} .badge.lo{color:var(--c-cold);background:rgba(79,179,240,.15)}
+.cy-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cy-sum button{text-align:left;border-radius:18px;border:1px solid var(--line);background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:4px;cursor:pointer}
+.cy-sum .n{width:24px;height:24px;border-radius:12px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.cy-sum b{font-size:14.5px;font-weight:600}
+.cy-sum span.x{font-size:12.5px;color:var(--muted);line-height:1.4}
+/* ---- resposta ao toque: encolhe e muda o brilho enquanto o dedo está no botão ---- */
+button,.btn,.segbtn,.icon-btn,.chip,.oscard,.radio,.hm-short .ic,.cp{transition:transform .12s ease,filter .12s ease,background-color .12s ease,border-color .12s ease}
+:is(button,.btn,.icon-btn,.chip,.oscard,.radio,.segbtn):is(:active,.press){transform:scale(.95);filter:brightness(1.25)}
+:is(.segbtn.on,.btn.primary,.hm-new,.splash .go,.chip[aria-pressed="true"],.seg button[aria-pressed="true"]):is(:active,.press){filter:brightness(.88)}
+:is(.btn.block,.oscard,.radio):is(:active,.press){transform:scale(.98)}
+.hm-short button:is(:active,.press),.hm-nav button:is(:active,.press){transform:none;filter:none}
+.hm-short button:is(:active,.press) .ic{transform:scale(.9);background:var(--accent-soft);border-color:var(--accent-line)}
+.hm-nav button:is(:active,.press) .ni{transform:scale(.88);filter:brightness(1.4)}
+.hm-nav .ni{transition:transform .12s ease}
+.cp:is(:active,.press){filter:brightness(1.5)}
+@media (prefers-reduced-motion:reduce){:is(button,.btn,.icon-btn,.chip,.oscard,.radio,.cp):is(:active,.press),.press :is(.ic,.ni){transform:none!important}}
+@media (prefers-reduced-motion:no-preference){.view{animation:in .18s ease-out}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<div class="app" id="app"></div>
+<div class="ptr" id="ptr" aria-hidden="true"><span class="ring"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 11-2.3-5.6"/><path d="M20 4v5h-5"/></svg></span><span id="ptrT">Puxe para atualizar</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="modal" id="modal" hidden></div>
+
+<script src="vendor/jspdf.umd.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* Tabelas de saturação (psig) de -50 a 70 °C, passo 1 °C. d = orvalho (vapor saturado), b = bolha (líquido saturado). Calculadas com CoolProp. */
+const PT={"R22":{"d":[-5.34,-4.85,-4.33,-3.8,-3.25,-2.67,-2.07,-1.45,-0.8,-0.13,0.57,1.29,2.04,2.81,3.62,4.45,5.32,6.21,7.13,8.09,9.07,10.09,11.15,12.24,13.36,14.52,15.72,16.95,18.22,19.53,20.88,22.28,23.71,25.18,26.7,28.26,29.87,31.52,33.22,34.97,36.76,38.6,40.5,42.44,44.43,46.48,48.58,50.74,52.94,55.21,57.53,59.91,62.35,64.85,67.4,70.02,72.7,75.45,78.26,81.13,84.07,87.07,90.15,93.29,96.5,99.78,103.14,106.57,110.07,113.64,117.29,121.02,124.82,128.71,132.67,136.71,140.84,145.04,149.33,153.71,158.17,162.72,167.35,172.08,176.89,181.8,186.8,191.89,197.07,202.35,207.73,213.21,218.78,224.45,230.23,236.1,242.09,248.17,254.36,260.66,267.07,273.58,280.21,286.95,293.8,300.77,307.86,315.06,322.38,329.82,337.38,345.07,352.88,360.81,368.88,377.07,385.4,393.86,402.45,411.17,420.04],"b":[-5.34,-4.85,-4.33,-3.8,-3.25,-2.67,-2.07,-1.45,-0.8,-0.13,0.57,1.29,2.04,2.81,3.62,4.45,5.32,6.21,7.13,8.09,9.07,10.09,11.15,12.24,13.36,14.52,15.72,16.95,18.22,19.53,20.88,22.28,23.71,25.18,26.7,28.26,29.87,31.52,33.22,34.97,36.76,38.6,40.5,42.44,44.43,46.48,48.58,50.74,52.94,55.21,57.53,59.91,62.35,64.85,67.4,70.02,72.7,75.45,78.26,81.13,84.07,87.07,90.15,93.29,96.5,99.78,103.14,106.57,110.07,113.64,117.29,121.02,124.82,128.71,132.67,136.71,140.84,145.04,149.33,153.71,158.17,162.72,167.35,172.08,176.89,181.8,186.8,191.89,197.07,202.35,207.73,213.21,218.78,224.45,230.23,236.1,242.09,248.17,254.36,260.66,267.07,273.58,280.21,286.95,293.8,300.77,307.86,315.06,322.38,329.82,337.38,345.07,352.88,360.81,368.88,377.07,385.4,393.86,402.45,411.17,420.04]},"R134a":{"d":[-10.42,-10.17,-9.9,-9.62,-9.33,-9.02,-8.7,-8.37,-8.02,-7.65,-7.27,-6.87,-6.46,-6.02,-5.57,-5.1,-4.61,-4.11,-3.58,-3.03,-2.46,-1.87,-1.25,-0.61,0.05,0.74,1.45,2.18,2.95,3.74,4.56,5.4,6.28,7.18,8.12,9.08,10.08,11.11,12.17,13.27,14.4,15.57,16.77,18.01,19.28,20.6,21.95,23.34,24.78,26.25,27.77,29.33,30.94,32.58,34.28,36.02,37.8,39.64,41.52,43.45,45.44,47.47,49.56,51.7,53.89,56.14,58.44,60.8,63.21,65.69,68.22,70.82,73.47,76.19,78.97,81.81,84.72,87.69,90.73,93.84,97.01,100.26,103.57,106.96,110.42,113.95,117.56,121.24,125.0,128.83,132.75,136.74,140.82,144.97,149.21,153.54,157.95,162.44,167.02,171.69,176.45,181.3,186.24,191.28,196.41,201.63,206.95,212.37,217.89,223.51,229.23,235.05,240.98,247.01,253.15,259.4,265.76,272.23,278.81,285.51,292.32],"b":[-10.42,-10.17,-9.9,-9.62,-9.33,-9.02,-8.7,-8.37,-8.02,-7.65,-7.27,-6.87,-6.46,-6.02,-5.57,-5.1,-4.61,-4.11,-3.58,-3.03,-2.46,-1.87,-1.25,-0.61,0.05,0.74,1.45,2.18,2.95,3.74,4.56,5.4,6.28,7.18,8.12,9.08,10.08,11.11,12.17,13.27,14.4,15.57,16.77,18.01,19.28,20.6,21.95,23.34,24.78,26.25,27.77,29.33,30.94,32.58,34.28,36.02,37.8,39.64,41.52,43.45,45.44,47.47,49.56,51.7,53.89,56.14,58.44,60.8,63.21,65.69,68.22,70.82,73.47,76.19,78.97,81.81,84.72,87.69,90.73,93.84,97.01,100.26,103.57,106.96,110.42,113.95,117.56,121.24,125.0,128.83,132.75,136.74,140.82,144.97,149.21,153.54,157.95,162.44,167.02,171.69,176.45,181.3,186.24,191.28,196.41,201.63,206.95,212.37,217.89,223.51,229.23,235.05,240.98,247.01,253.15,259.4,265.76,272.23,278.81,285.51,292.32]},"R404A":{"d":[-2.95,-2.34,-1.71,-1.05,-0.37,0.34,1.07,1.84,2.63,3.45,4.3,5.18,6.1,7.04,8.02,9.04,10.08,11.17,12.29,13.44,14.64,15.87,17.14,18.45,19.81,21.2,22.64,24.12,25.65,27.22,28.84,30.51,32.22,33.98,35.8,37.66,39.58,41.55,43.57,45.64,47.78,49.96,52.21,54.52,56.88,59.3,61.79,64.34,66.95,69.62,72.37,75.17,78.05,80.99,84.01,87.09,90.25,93.48,96.78,100.16,103.61,107.14,110.75,114.44,118.21,122.06,125.99,130.01,134.11,138.3,142.58,146.95,151.41,155.95,160.6,165.33,170.16,175.09,180.11,185.23,190.46,195.78,201.21,206.75,212.39,218.14,223.99,229.96,236.04,242.23,248.54,254.97,261.51,268.17,274.96,281.87,288.9,296.06,303.35,310.78,318.33,326.02,333.85,341.82,349.93,358.19,366.59,375.14,383.85,392.71,401.74,410.93,420.29,429.82,439.53,449.43,459.52,469.82,480.33,491.09,502.11],"b":[-2.48,-1.86,-1.21,-0.54,0.16,0.88,1.63,2.41,3.22,4.06,4.93,5.83,6.76,7.72,8.72,9.75,10.81,11.91,13.05,14.23,15.44,16.69,17.98,19.32,20.69,22.1,23.56,25.07,26.61,28.21,29.85,31.53,33.27,35.05,36.89,38.77,40.71,42.7,44.74,46.84,48.99,51.2,53.47,55.8,58.18,60.63,63.14,65.71,68.34,71.04,73.8,76.63,79.53,82.5,85.53,88.64,91.81,95.06,98.39,101.79,105.26,108.81,112.44,116.15,119.94,123.81,127.77,131.8,135.93,140.14,144.43,148.82,153.29,157.86,162.51,167.27,172.11,177.05,182.09,187.23,192.47,197.81,203.25,208.8,214.45,220.21,226.08,232.05,238.14,244.34,250.66,257.09,263.64,270.31,277.09,284.01,291.04,298.2,305.49,312.92,320.47,328.15,335.98,343.94,352.04,360.28,368.67,377.21,385.9,394.74,403.74,412.9,422.22,431.71,441.38,451.23,461.25,471.48,481.9,492.53,503.39]},"R410A":{"d":[1.05,1.85,2.69,3.56,4.47,5.41,6.38,7.39,8.45,9.53,10.66,11.83,13.05,14.3,15.6,16.94,18.33,19.77,21.25,22.79,24.37,26.0,27.69,29.43,31.23,33.08,34.99,36.96,38.98,41.07,43.22,45.43,47.7,50.05,52.45,54.93,57.47,60.09,62.77,65.53,68.36,71.27,74.26,77.32,80.46,83.68,86.99,90.38,93.85,97.41,101.06,104.79,108.62,112.53,116.54,120.65,124.85,129.15,133.55,138.04,142.64,147.35,152.15,157.07,162.09,167.22,172.47,177.82,183.29,188.88,194.58,200.41,206.35,212.42,218.61,224.93,231.37,237.95,244.65,251.49,258.47,265.58,272.83,280.23,287.76,295.44,303.27,311.25,319.37,327.66,336.09,344.69,353.44,362.36,371.45,380.7,390.12,399.71,409.48,419.43,429.55,439.87,450.36,461.05,471.94,483.02,494.3,505.78,517.47,529.38,541.5,553.84,566.41,579.21,592.25,605.54,619.07,632.87,646.93,661.28,675.93],"b":[1.11,1.92,2.76,3.63,4.54,5.48,6.46,7.48,8.53,9.62,10.76,11.93,13.15,14.41,15.71,17.06,18.45,19.89,21.38,22.92,24.51,26.15,27.84,29.59,31.39,33.25,35.16,37.14,39.17,41.26,43.42,45.64,47.92,50.27,52.68,55.17,57.72,60.34,63.03,65.8,68.64,71.56,74.55,77.63,80.78,84.01,87.33,90.73,94.21,97.78,101.44,105.18,109.02,112.95,116.97,121.09,125.3,129.61,134.02,138.54,143.15,147.87,152.69,157.62,162.65,167.8,173.06,178.43,183.92,189.52,195.24,201.08,207.04,213.12,219.33,225.67,232.13,238.72,245.45,252.31,259.3,266.43,273.7,281.11,288.67,296.37,304.22,312.21,320.36,328.66,337.11,345.73,354.5,363.44,372.54,381.8,391.24,400.85,410.63,420.59,430.73,441.05,451.55,462.25,473.13,484.21,495.49,506.96,518.64,530.53,542.63,554.95,567.48,580.24,593.23,606.45,619.9,633.61,647.56,661.77,676.25]},"R507A":{"d":[-2.17,-1.53,-0.87,-0.18,0.53,1.27,2.04,2.84,3.67,4.53,5.41,6.33,7.29,8.27,9.29,10.35,11.44,12.57,13.73,14.93,16.17,17.45,18.77,20.14,21.54,22.99,24.48,26.02,27.6,29.23,30.9,32.62,34.4,36.22,38.1,40.02,42.0,44.03,46.12,48.27,50.47,52.72,55.04,57.42,59.85,62.35,64.91,67.54,70.23,72.98,75.8,78.69,81.65,84.68,87.78,90.95,94.19,97.51,100.9,104.37,107.91,111.54,115.24,119.03,122.89,126.84,130.88,135.0,139.2,143.49,147.88,152.35,156.91,161.57,166.32,171.17,176.11,181.15,186.29,191.53,196.87,202.32,207.87,213.52,219.29,225.16,231.14,237.24,243.45,249.77,256.22,262.78,269.46,276.26,283.19,290.25,297.43,304.74,312.19,319.76,327.48,335.33,343.33,351.47,359.76,368.19,376.78,385.52,394.42,403.49,412.72,422.12,431.7,441.46,451.4,461.54,471.88,482.43,493.21,504.23,515.53],"b":[-2.17,-1.53,-0.87,-0.18,0.53,1.27,2.04,2.84,3.67,4.53,5.42,6.34,7.29,8.28,9.3,10.35,11.44,12.57,13.74,14.94,16.18,17.46,18.78,20.15,21.55,23.0,24.49,26.03,27.61,29.24,30.92,32.65,34.42,36.25,38.12,40.05,42.03,44.07,46.16,48.3,50.5,52.76,55.08,57.46,59.9,62.4,64.96,67.59,70.28,73.04,75.86,78.76,81.72,84.75,87.85,91.02,94.27,97.59,100.99,104.46,108.01,111.63,115.34,119.13,123.0,126.96,130.99,135.12,139.33,143.62,148.01,152.49,157.06,161.72,166.47,171.32,176.27,181.32,186.46,191.71,197.05,202.5,208.06,213.72,219.49,225.37,231.36,237.46,243.67,250.0,256.45,263.02,269.71,276.52,283.45,290.51,297.7,305.01,312.46,320.05,327.77,335.62,343.62,351.76,360.05,368.49,377.08,385.82,394.72,403.78,413.0,422.4,431.97,441.71,451.64,461.76,472.08,482.61,493.35,504.33,515.57]}};
+const T0=-50;
+const GASES=['R22','R404A','R134a','R410A','R507A'];
+const TIPOS={com:'Comissionamento',prev:'Manutenção preventiva',man:'Manutenção',foto:'Relatório fotográfico'};
+const NOVOS=['com','prev','man'];
+const TIPOS_SUB={com:'Partida, medições, SA/SR e degelo',prev:'Checklist com fotos por item',man:'Defeito, serviço executado e fotos',foto:'Fotos com legenda'};
+const STEPS={com:['Câmara','Medições','Degelo','Queda T','Fotos'],prev:['Checklist','Fotos'],man:['Defeito','Serviço','Fotos'],foto:['Fotos']};
+const CHECK=['Limpeza do condensador','Limpeza do evaporador','Dreno e bandeja','Ventiladores (ruído e fixação)','Aperto de bornes e contatos','Corrente do compressor','Pressões de trabalho','Isolamento das linhas','Vazamentos (teste com espuma ou detector)','Vedação e borracha da porta','Resistências de degelo','Controlador e parâmetros'];
+const MAN_SIT={res:['Resolvido','ok'],pen:['Pendente','bad'],peca:['Aguardando peça','warn']};
+const MAN0=()=>({defeito:'',causa:'',servico:'',pecas:'',situacao:''});
+const MODELO_PADRAO={id:'padrao',nome:'Padrão câmara fria',itens:CHECK};
+const norm=v=>String(v||'').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ');
+function modelos(){return [MODELO_PADRAO,...(S.settings.modelos||[])]}
+function itensDe(mid){const m=modelos().find(x=>x.id===mid)||MODELO_PADRAO;return m.itens.map(t=>({id:uid(),t,s:null,obs:''}))}
+/* ordens antigas: checklist por posição vira lista com nome e id; fotos de item passam a apontar para o id */
+function normOS(o){if(!o.man)o.man=MAN0();if(!Array.isArray(o.prev))o.prev=[];
+ if(o.prev.length&&o.prev[0].t==null){o.prev=o.prev.map((x,i)=>({id:uid(),t:CHECK[i]||('Item '+(i+1)),s:x.s||null,obs:x.obs||''}))}
+ (o.fotos||[]).forEach(f=>{if(f.item!=null&&!f.itemId&&o.prev[f.item])f.itemId=o.prev[f.item].id});return o}
+function cliOf(o){return S.clientes.find(c=>c.id===o.clienteId)}
+/* liga a OS a um cliente e equipamento do cadastro (cria se não existir, nunca duplica o nome) */
+function linkOS(o){if(o.clienteId&&cliOf(o))return false;const nome=(o.cliente||'').trim();if(!nome)return false;
+ let c=S.clientes.find(x=>norm(x.nome)===norm(nome));if(!c){c={id:uid(),nome,local:o.local||'',equips:[]};S.clientes.push(c)}o.clienteId=c.id;
+ const en=(o.equipamento||'').trim();if(en){let e=c.equips.find(x=>norm(x.nome)===norm(en));if(!e){e={id:uid(),nome:en,gas:o.gas||''};c.equips.push(e)}o.equipId=e.id}return true}
+const MOM={antes:'Antes',durante:'Durante',depois:'Depois'};
+const DEF={empresa:'',cnpj:'',telefone:'',tecnico:'',logo:null,saMin:10,saMax:15,srMin:5,srMax:11,seq:1,visto:false};
+
+const S={settings:Object.assign({},DEF),list:[],clientes:[],view:'splash',cur:null,step:0,novo:null,momento:'antes',novoErr:''};
+
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>{if(v==null)return null;const s=String(v).trim().replace(',','.');if(s===''||s==='-')return null;const n=Number(s);return isFinite(n)?n:null};
+const f1=v=>v==null?'—':v.toFixed(1).replace('.',',').replace('-','−');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(4,'0');
+const fmtDate=t=>{const d=new Date(t);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
+const fmtHora=t=>new Date(t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+function getPath(o,p){return p.split('.').reduce((a,k)=>a==null?a:a[k],o)}
+function setPath(o,p,v){const ks=p.split('.');let a=o;for(let i=0;i<ks.length-1;i++){if(a[ks[i]]==null)a[ks[i]]={};a=a[ks[i]]}a[ks[ks.length-1]]=v}
+
+function satT(gas,psig,kind){const a=PT[gas]&&PT[gas][kind];if(!a||psig==null)return null;if(psig<a[0]||psig>a[a.length-1])return null;for(let i=0;i<a.length-1;i++){if(psig<=a[i+1]){return T0+i+(psig-a[i])/(a[i+1]-a[i])}}return null}
+
+/* ---------- ícones ---------- */
+const sv=(d,w=20,extra='')=>`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${d}</svg>`;
+const I={
+ back:sv('<path d="M15 5l-7 7 7 7"/>'),
+ next:sv('<path d="M5 12h14M13 6l6 6-6 6"/>',22),
+ plus:sv('<path d="M12 5v14M5 12h14"/>'),
+ gear:sv('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>'),
+ cam:sv('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+ gal:sv('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>'),
+ trash:sv('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',18),
+ x:sv('<path d="M6 6l12 12M18 6L6 18"/>',18),
+ ok:sv('<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',22),
+ warn:sv('<path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/>',22),
+ wa:sv('<path d="M20 11.5a8.5 8.5 0 01-12.6 7.4L3 20l1.2-4.2A8.5 8.5 0 1120 11.5z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1c-1-.5-1.5-1-2-2l1-1-1-2z" stroke-width="1.3"/>',20),
+ pdf:sv('<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>',22),
+};
+const flake=(w,sw=1.4)=>`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="${sw}" stroke-linecap="round" aria-hidden="true"><path d="M12 12L3 12M12 12L7.5 4.2M12 12L7.5 19.8M5 12l-1.4-1.4M5 12l-1.4 1.4M8.6 6.2l-2 .2M8.6 6.2l-.6-1.9M8.6 17.8l-.6 1.9M8.6 17.8l-2-.2"/><path d="M12 12h6.5M12 12l3.2-5.6M12 12l3.2 5.6M12 3v9M12 21v-9"/><circle cx="20" cy="12" r="1.4"/><circle cx="16" cy="5" r="1.4"/><circle cx="16" cy="19" r="1.4"/></svg>`;
+
+const LOGO_SVG='<defs><linearGradient id="ID" gradientUnits="userSpaceOnUse" x1="0" y1="-46" x2="44" y2="46"><stop offset="0" stop-color="#F6B27C"/><stop offset=".5" stop-color="#DA8248"/><stop offset="1" stop-color="#B0602F"/></linearGradient></defs><style>.ID-ic{fill:none;stroke:#E2F3FA;stroke-width:4.2;stroke-linecap:round;stroke-linejoin:round}.ID-cu{fill:none;stroke:url(#ID);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}.ID-pd{fill:none;stroke:url(#ID);stroke-width:3.0}</style><path class="ID-ic" d="M0.00 -44.00L0.00 44.00"/><path class="ID-ic" d="M0.00 -31.00L-8.00 -39.00"/><path class="ID-ic" d="M0.00 -19.00L-8.00 -27.00"/><path class="ID-ic" d="M0.00 19.00L-8.00 27.00"/><path class="ID-ic" d="M0.00 31.00L-8.00 39.00"/><path class="ID-ic" d="M0.00 0.00L-34.64 -20.00"/><path class="ID-ic" d="M-12.99 -7.50L-12.99 -16.50"/><path class="ID-ic" d="M-12.99 -7.50L-20.78 -3.00"/><path class="ID-ic" d="M-23.38 -13.50L-23.38 -21.50"/><path class="ID-ic" d="M-23.38 -13.50L-30.31 -9.50"/><path class="ID-ic" d="M0.00 0.00L-34.64 20.00"/><path class="ID-ic" d="M-12.99 7.50L-20.78 3.00"/><path class="ID-ic" d="M-12.99 7.50L-12.99 16.50"/><path class="ID-ic" d="M-23.38 13.50L-30.31 9.50"/><path class="ID-ic" d="M-23.38 13.50L-23.38 21.50"/><path class="ID-cu" d="M6.50 -3.75L36.03 -20.80"/><path class="ID-cu" d="M15.59 -9.00L15.59 -19.60"/><path class="ID-cu" d="M25.98 -15.00L25.98 -28.10"/><path class="ID-cu" d="M25.98 -15.00L33.77 -10.50L37.57 -10.50"/><path class="ID-cu" d="M6.20 -30.00L10.51 -34.31"/><path class="ID-cu" d="M6.50 3.75L36.03 20.80"/><path class="ID-cu" d="M15.59 9.00L15.59 19.60"/><path class="ID-cu" d="M25.98 15.00L25.98 28.10"/><path class="ID-cu" d="M25.98 15.00L33.77 10.50L37.57 10.50"/><path class="ID-cu" d="M6.20 30.00L10.51 34.31"/><circle class="ID-pd" cx="38.97" cy="-22.50" r="3.4"/><circle class="ID-pd" cx="15.59" cy="-23.00" r="3.4"/><circle class="ID-pd" cx="25.98" cy="-31.50" r="3.4"/><circle class="ID-pd" cx="40.97" cy="-10.50" r="3.4"/><circle class="ID-pd" cx="12.92" cy="-36.72" r="3.4"/><circle class="ID-pd" cx="38.97" cy="22.50" r="3.4"/><circle class="ID-pd" cx="15.59" cy="23.00" r="3.4"/><circle class="ID-pd" cx="25.98" cy="31.50" r="3.4"/><circle class="ID-pd" cx="40.97" cy="10.50" r="3.4"/><circle class="ID-pd" cx="12.92" cy="36.72" r="3.4"/>';
+const snowLogo=(w,id,extra='')=>`<svg width="${w}" height="${w}" viewBox="-50 -50 100 100" ${extra} role="img" aria-label="Logo SnowField Tech">${LOGO_SVG.split('ID').join(id)}</svg>`;
+/* ---------- armazenamento (IndexedDB, só neste aparelho) ---------- */
+const DB={db:null,ok:false};
+function idbOpen(){return new Promise(res=>{try{const r=indexedDB.open('snowtech',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>{DB.db=r.result;DB.ok=true;res()};r.onerror=()=>res();r.onblocked=()=>res();setTimeout(res,3000)}catch(e){res()}})}
+function idbGet(k){return new Promise(res=>{if(!DB.ok)return res(undefined);try{const q=DB.db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>res(undefined)}catch(e){res(undefined)}})}
+function idbSet(k,v){return new Promise(res=>{if(!DB.ok)return res(false);try{const tx=DB.db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res(true);tx.onerror=()=>res(false);tx.onabort=()=>res(false)}catch(e){res(false)}})}
+function idbDel(k){return new Promise(res=>{if(!DB.ok)return res(false);try{const tx=DB.db.transaction('kv','readwrite');tx.objectStore('kv').delete(k);tx.oncomplete=()=>res(true);tx.onerror=()=>res(false)}catch(e){res(false)}})}
+let saveT=null;const dirty=new Set();let dirtyS=false,dirtyIds=false,dirtyC=false;
+function markC(){dirtyC=true;schedule()}
+function markOS(o){if(o){dirty.add(o.id);schedule()}}
+function markS(){dirtyS=true;clearTimeout(saveT);flush()}
+function schedule(){clearTimeout(saveT);saveT=setTimeout(flush,350)}
+async function flush(){
+  if(!DB.ok)return;
+  if(dirtyS){dirtyS=false;await idbSet('settings',S.settings)}
+  if(dirtyC){dirtyC=false;await idbSet('clientes',S.clientes)}
+  for(const id of [...dirty]){dirty.delete(id);const o=S.list.find(x=>x.id===id);if(o){const ok=await idbSet('os:'+id,o);if(!ok)toast('Não foi possível salvar. O armazenamento do aparelho pode estar cheio.')}}
+  if(dirtyIds){dirtyIds=false;await idbSet('ids',S.list.map(o=>o.id))}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flush()});
+window.addEventListener('pagehide',()=>flush());
+
+function novaOS(base){return Object.assign({id:uid(),numero:'',criado:Date.now(),tipo:'com',status:'andamento',cliente:'',local:'',equipamento:'',gas:'R22',
+  camara:{tp:'',produto:'',dim:'',obs:''},med:{ps:'',ts:'',pd:'',tl:'',ta:'',ic:''},degelo:{tipo:'',int:'',dur:'',fim:'',obs:''},queda:[],
+  prev:CHECK.map(t=>({id:uid(),t,s:null,obs:''})),man:MAN0(),clienteId:'',equipId:'',fotos:[],obs:'',assinatura:null,assinante:''},base||{})}
+function exemplo(){const now=Date.now();return novaOS({numero:'EX',exemplo:true,cliente:'Cliente exemplo',local:'São Paulo/SP',equipamento:'Câmara de resfriados · Unidade 01',gas:'R22',criado:now-3600e3,
+  camara:{tp:'2',produto:'',dim:'',obs:''},med:{ps:'40',ts:'3,5',pd:'236',tl:'38',ta:'32',ic:''},
+  degelo:{tipo:'Elétrico',int:'6',dur:'30',fim:'12',obs:''},
+  queda:[{t:now-3000e3,v:18},{t:now-2100e3,v:12.5},{t:now-1200e3,v:8},{t:now-300e3,v:5.2}]})}
+
+/* ---------- cálculo e diagnóstico ---------- */
+/* Pressão de descarga (psig) esperada por temperatura ambiente, [mín, máx] */
+const DESC_TA=[5,10,15,20,24,28,32,36,38];
+const DESC={
+ R22:[[106,122],[126,142],[145,163],[170,190],[190,205],[205,230],[230,255],[255,280],[280,300]],
+ R404A:[[130,148],[150,170],[177,195],[200,220],[220,250],[250,275],[275,305],[305,335],[335,355]],
+ R134a:[[60,72],[74,85],[88,100],[105,118],[118,132],[132,150],[150,168],[168,185],[185,203]]
+};
+function descRange(gas,ta){const t=DESC[gas];if(!t||ta==null||ta<DESC_TA[0]||ta>DESC_TA[DESC_TA.length-1])return null;
+ let i=0;while(i<DESC_TA.length-2&&ta>DESC_TA[i+1])i++;const f=(ta-DESC_TA[i])/(DESC_TA[i+1]-DESC_TA[i]);
+ return [t[i][0]+f*(t[i+1][0]-t[i][0]),t[i][1]+f*(t[i+1][1]-t[i][1])]}
+function calc(o){
+  const st=S.settings;
+  const ps=num(o.med.ps),pd=num(o.med.pd),ts=num(o.med.ts),tl=num(o.med.tl),ta=num(o.med.ta);
+  const te=ps==null?null:satT(o.gas,ps,'d');
+  const tc=pd==null?null:satT(o.gas,pd,'b');
+  const sa=te!=null&&ts!=null?ts-te:null;
+  const sr=tc!=null&&tl!=null?tc-tl:null;
+  const ap=tc!=null&&ta!=null?tc-ta:null;
+  const lv=(v,a,b)=>v==null?null:v<a?'low':v>b?'high':'ok';
+  const dr=descRange(o.gas,ta);const lap=dr&&pd!=null?(pd<dr[0]-1?'low':pd>dr[1]+1?'high':'ok'):null;
+  return {te,tc,sa,sr,ap,dr,lap,ta,outS:ps!=null&&te==null,outD:pd!=null&&tc==null,la:lv(sa,num(st.saMin),num(st.saMax)),lr:lv(sr,num(st.srMin),num(st.srMax))};
+}
+/* Decisão pela combinação SA (superaquecimento) x SR (sub-resfriamento). Chave: SA-SR */
+const DIAG={
+ 'ok-ok':['ok','Carga e válvula dentro da faixa','Nenhuma ação necessária na válvula ou na carga.'],
+ 'high-low':['bad','Falta de fluido refrigerante','Colocar fluido (diminui o SA e aumenta o SR). Procure e corrija o vazamento antes de completar.'],
+ 'low-high':['bad','Excesso de fluido refrigerante','Retirar fluido (aumenta o SA e diminui o SR).'],
+ 'high-high':['warn','Evaporador com pouco fluido e líquido acumulado no condensador','Abrir a válvula de expansão (diminui o SA e o SR). Se não responder, suspeite de restrição no filtro secador ou na linha de líquido.'],
+ 'low-low':['warn','Válvula de expansão alimentando demais','Fechar a válvula de expansão (aumenta o SA e o SR). Confira também ventiladores e gelo no evaporador.'],
+ 'high-ok':['warn','Evaporador recebendo pouco fluido','Abrir a válvula de expansão aos poucos e acompanhar o SR. Confira o bulbo e se há restrição antes da válvula.'],
+ 'low-ok':['bad','Risco de retorno de líquido ao compressor','Fechar a válvula de expansão aos poucos e acompanhar o SR.'],
+ 'ok-low':['warn','Carga no limite ou condensador trocando pouco','Se o visor mostrar bolhas, colocar fluido aos poucos. Confira a limpeza do condensador. Com tanque de líquido, SR baixo pode ser normal.'],
+ 'ok-high':['warn','Possível excesso leve de carga ou restrição','Descarte restrição no filtro secador e depois retire fluido aos poucos.'],
+};
+function diag(c){
+  if(c.te!=null&&c.tc!=null&&c.tc<=c.te)return {sev:'warn',t:'Leituras inconsistentes',a:'A pressão de alta está abaixo ou igual à de baixa. Confira as leituras e as mangueiras.'};
+  if(c.sa!=null&&c.sa<=0.5)return {sev:'bad',t:'Superaquecimento zero ou negativo',a:'Há líquido saindo do evaporador: risco de golpe de líquido. Feche a válvula de expansão e confira a troca de calor no evaporador e a medição.'};
+  if(c.la&&c.lr){const d=DIAG[c.la+'-'+c.lr];return {sev:d[0],t:d[1],a:d[2]}}
+  if(c.la){return c.la==='ok'?{sev:'ok',t:'Superaquecimento dentro da faixa',a:'Meça o sub-resfriamento para avaliar a carga.'}:c.la==='high'?{sev:'warn',t:'Superaquecimento alto',a:'Pouca alimentação ou falta de fluido. Meça o sub-resfriamento para separar as causas.'}:{sev:'bad',t:'Superaquecimento baixo',a:'Risco de retorno de líquido ao compressor. Feche a válvula de expansão aos poucos.'}}
+  if(c.lr){return c.lr==='ok'?{sev:'ok',t:'Sub-resfriamento dentro da faixa',a:'Meça o superaquecimento para avaliar a válvula.'}:c.lr==='high'?{sev:'warn',t:'Sub-resfriamento alto',a:'Possível excesso de carga ou restrição. Meça o superaquecimento.'}:{sev:'warn',t:'Sub-resfriamento baixo',a:'Possível falta de carga. Confira o visor de líquido.'}}
+  return null;
+}
+
+/* ---------- UI comum ---------- */
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,4200)}
+function confirmBox(title,text,okLabel,onOk){const m=$('#modal');m.innerHTML=`<div class="glass" role="dialog" aria-modal="true" aria-labelledby="mt"><h2 id="mt" class="h2">${esc(title)}</h2><p class="muted">${esc(text)}</p><div class="acts"><button class="btn" data-m="no">Cancelar</button><button class="btn danger" data-m="yes">${esc(okLabel)}</button></div></div>`;m.hidden=false;m.querySelector('[data-m="no"]').focus();m.onclick=e=>{const b=e.target.closest('[data-m]');if(e.target===m||b&&b.dataset.m==='no'){m.hidden=true}else if(b){m.hidden=true;onOk()}}}
+function bar(title,sub,back,right){return `<header class="bar"><button class="icon-btn" data-act="go" data-to="${back}" aria-label="Voltar">${I.back}</button><div class="bar-t"><h1>${esc(title)}</h1>${sub?`<p>${esc(sub)}</p>`:''}</div>${right||''}</header>`}
+function field(label,path,scope,opts={}){const id='f_'+scope+'_'+path.replace(/\./g,'_');const v=getPath(scopeObj(scope),path);
+  const tag=opts.area?`<textarea class="inp" id="${id}" data-bind="${path}" data-scope="${scope}" placeholder="${esc(opts.ph||'')}" rows="3">${esc(v)}</textarea>`
+  :`<input class="inp" id="${id}" data-bind="${path}" data-scope="${scope}" value="${esc(v)}" placeholder="${esc(opts.ph||'')}" ${opts.dec?'inputmode="decimal"':''} ${opts.type?`type="${opts.type}"`:''} autocomplete="off">`;
+  return `<label class="field" for="${id}"><span>${esc(label)}</span>${tag}</label>`}
+function mf(label,path,unit){const id='m_'+path.replace(/\./g,'_');return `<label class="mf" for="${id}"><span class="l">${esc(label)}</span><span class="row"><input id="${id}" data-bind="${path}" data-scope="os" value="${esc(getPath(S.cur,path))}" inputmode="decimal" placeholder="—" autocomplete="off"><em>${unit}</em></span></label>`}
+function scopeObj(s){return s==='cli'?S.curCli:s==='os'?S.cur:s==='settings'?S.settings:s==='tmp'?S.tmp:S.novo}
+function photoPair(kind,extra=''){const a='p_'+kind+'_c'+uid(),b='p_'+kind+'_g'+uid();
+ return `<div class="seg pickseg" role="group" aria-label="Adicionar foto"><label class="segbtn on" for="${a}">${I.cam} Tirar foto<input class="pick" type="file" accept="image/*" capture="environment" id="${a}" data-photo="${kind}" ${extra}></label><label class="segbtn" for="${b}">${I.gal} Buscar foto<input class="pick" type="file" accept="image/*" id="${b}" data-photo="${kind}" ${extra} ${kind==='os'?'multiple':''}></label></div>`}
+function photoBtn(kind,label,extra=''){const id='p_'+kind+'_'+uid();return `<label class="btn dashed block" for="${id}">${I.cam} ${esc(label)}<input class="pick" type="file" accept="image/*" id="${id}" data-photo="${kind}" ${extra} ${kind==='os'?'multiple':''}></label>`}
+
+/* ---------- telas ---------- */
+const V={};
+V.splash=()=>`<div class="view splash">${snowLogo(620,'lgbg','class="bgflake" aria-hidden="true"')}
+ <section class="card">${snowLogo(96,'lg1')}<h1>SnowField<span>Tech</span></h1><p class="tag">Refrigeração com método</p><p class="lead">Comissionamento, preventiva<br>e manutenção em um só lugar.<br>Relatórios em PDF na hora.</p>
+ <button class="go" data-act="comecar">Começar ${I.next}</button>
+ <button class="link" data-act="entrar">Já tenho conta · Entrar</button></section></div>`;
+
+const osCard=o=>`<button class="oscard" data-act="abrir" data-id="${o.id}"><span class="top"><span class="muted small">OS ${esc(o.numero)} · ${TIPOS[o.tipo].replace('Manutenção preventiva','Preventiva').replace('Relatório fotográfico','Fotos')}</span>${o.exemplo?'<span class="badge ex">Exemplo</span>':o.status==='concluida'?'<span class="badge ok">Concluída</span>':'<span class="badge warn">Em andamento</span>'}</span><span class="t">${esc(o.cliente||'Sem cliente')}${o.equipamento?' · '+esc(o.equipamento):''}</span><span class="muted small">${fmtDate(o.criado)}${o.tipo==='com'?' · '+o.gas:o.status==='concluida'?' · PDF gerado':''}</span></button>`;
+const NAV=[['inicio','Início','<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>'],['clientes','Clientes','<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 010 7M18 14c2 .7 3 2.8 3 6"/>'],['relatorios','Relatórios','<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/>'],['empresa','Empresa','<path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/>']];
+const ATALHOS=[['ciclo','Ciclo','<circle cx="12" cy="12" r="8"/><path d="M12 4l2.2-1.6M12 4l2.2 1.6M12 20l-2.2-1.6M12 20l-2.2 1.6"/><path d="M8.5 12h7M12 8.5v7" stroke-width="1.4"/>'],['com','Partida','<path d="M14 14.8V4a2 2 0 10-4 0v10.8a4 4 0 104 0z"/><path d="M12 10v6"/>'],['prev','Preventiva','<path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="3"/>'],['man','Manutenção','<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>']];
+function iniciais(s){const n=(s.tecnico||s.empresa||'').trim().split(/\s+/).filter(Boolean);return n.length?(n[0][0]+(n.length>1?n[n.length-1][0]:'')).toUpperCase():''}
+V.home=()=>{const s=S.settings,tab=S.homeTab||'inicio';const and=S.list.filter(o=>o.status!=='concluida').length,conc=S.list.length-and;
+ const sorted=[...S.list].sort((a,b)=>b.criado-a.criado);let main='';
+ if(tab==='inicio'){const shown=S.verTodas?sorted:sorted.slice(0,2);
+  main=`<section class="hm-hero"><h1>Serviços de hoje</h1><p>${and} em andamento · ${conc} concluído${conc===1?'':'s'}</p><button class="hm-new" data-act="nova">${sv('<path d="M12 5v14M5 12h14"/>',20)}Nova ordem de serviço</button></section>
+  <section class="hm-short" aria-label="Atalhos">${ATALHOS.map(([t,l,d],i)=>`<button data-act="atalho" data-t="${t}"><span class="ic">${sv(d,26)}</span><span>${l}</span></button>`).join('')}</section>
+  <section class="hm-list"><div class="hm-h"><h2>Recentes</h2>${sorted.length>2?`<button class="hm-link" data-act="verTodas">${S.verTodas?'Ver menos':'Ver todas →'}</button>`:''}</div>
+  ${shown.length?shown.map(osCard).join(''):'<div class="empty">Nenhuma ordem ainda. Toque em <b>Nova ordem de serviço</b> para começar.</div>'}</section>`}
+ else if(tab==='clientes'){const cls=[...S.clientes].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  main=`<section class="hm-list"><div class="hm-h"><h2>Clientes</h2><button class="hm-link" data-act="novoCli">+ Novo cliente</button></div>${cls.length?cls.map(c=>{const n=S.list.filter(o=>o.clienteId===c.id).length;return `<button class="oscard" data-act="abrirCli" data-id="${c.id}"><span class="top"><span class="t">${esc(c.nome)}</span><span class="badge ex">${n} OS</span></span><span class="muted small">${c.equips.length} equipamento${c.equips.length===1?'':'s'}${c.local?' · '+esc(c.local):''}</span></button>`}).join(''):'<div class="empty">Nenhum cliente ainda. Toque em <b>+ Novo cliente</b> ou crie uma ordem de serviço.</div>'}</section>`}
+ else if(tab==='relatorios'){const done=sorted.filter(o=>o.status==='concluida');
+  main=`<section class="hm-list"><div class="hm-h"><h2>Relatórios gerados</h2></div>${done.length?done.map(osCard).join(''):'<div class="empty">Quando você gerar o PDF de uma ordem, ela aparece aqui como concluída.</div>'}</section>`}
+ return `<div class="view home"><header class="hm-top">${snowLogo(32,'lgh')}<div class="hm-brand"><span>SnowField Tech</span><small>${s.empresa?esc(s.empresa):'[Sua empresa]'}</small></div><button class="hm-av" data-act="go" data-to="empresa" aria-label="Dados da empresa">${esc(iniciais(s))||sv('<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',20)}</button></header>
+ ${DB.ok?'':'<p class="warnbox">Este navegador não permite salvar dados. Você pode testar, mas tudo se perde ao fechar a página.</p>'}
+ <div class="hm-main">${main}</div>
+ <nav class="hm-nav" aria-label="Navegação principal">${NAV.map(([k,l,d])=>`<button data-act="navTab" data-k="${k}" ${tab===k?'aria-current="page"':''}><span class="ni">${sv(d,20)}</span>${l}</button>`).join('')}</nav></div>`};
+
+/* ---------- tela: como funciona o ciclo ---------- */
+const cpBox=(id,i,cls,cx,cy,w,h,t,s)=>`<g class="cp ${cls} dim" id="${id}" data-act="cyStep" data-i="${i}" role="button" tabindex="0" aria-label="${esc(t)}"><rect x="${cx-w/2}" y="${cy-h/2}" width="${w}" height="${h}" rx="9"/><text class="t" x="${cx}" y="${s?cy-1:cy+4.5}" text-anchor="middle">${esc(t)}</text>${s?`<text class="s" x="${cx}" y="${cy+13}" text-anchor="middle">${esc(s)}</text>`:''}</g>`;
+const gauge=(id,x,y,t)=>`<g class="gg dim" id="${id}"><circle cx="${x}" cy="${y}" r="11"/><text x="${x}" y="${y+3}" text-anchor="middle">${t}</text></g>`;
+const heatOut='<g class="heat out dim" id="cy-hout"><path d="M160 34 q-5 -5 0 -10 q5 -5 0 -10"/><path d="M180 34 q-5 -5 0 -10 q5 -5 0 -10"/><path d="M200 34 q-5 -5 0 -10 q5 -5 0 -10"/></g><text class="cy-lbl dim" id="cy-houtT" x="216" y="22">calor rejeitado</text>';
+const heatIn='<g class="heat in dim" id="cy-hin"><path d="M160 430 q-5 -5 0 -10 q5 -5 0 -10"/><path d="M180 430 q-5 -5 0 -10 q5 -5 0 -10"/><path d="M200 430 q-5 -5 0 -10 q5 -5 0 -10"/></g><text class="cy-lbl dim" id="cy-hinT" x="216" y="424">calor absorvido</text>';
+const RESUMO=[['Compressão','Vapor frio vira vapor quente de alta pressão.'],['Condensação','O vapor entrega calor para fora e vira líquido.'],['Expansão','A pressão cai e o líquido vira uma mistura bem fria.'],['Evaporação','A mistura ferve tirando calor do ambiente e volta como vapor.']];
+const CY={
+ ref:{label:'Refrigeração',exp:[652,688],resumo:[1,2,6,7],
+  intro:'O sistema não fabrica frio: ele tira calor de dentro da câmara e joga para fora. O mesmo fluido circula sem parar e muda de estado em cada componente.',
+  pipes:'<path class="pipe hi dim" id="cy-pdesc" d="M300 250 L300 60 L180 60"/><path class="pipe hi dim" id="cy-pliq" d="M180 60 L60 60 L60 300"/><path class="pipe lo dim" id="cy-pmist" d="M60 300 L60 380 L180 380"/><path class="pipe lo dim" id="cy-psuc" d="M180 380 L300 380 L300 250"/>',
+  deco:'<text class="cy-side" x="180" y="160" text-anchor="middle" style="fill:var(--c-hot)">ALTA PRESSÃO</text><text class="cy-side" x="180" y="318" text-anchor="middle" style="fill:var(--c-cold)">BAIXA PRESSÃO</text>',
+  comps:()=>cpBox('cy-comp',1,'hi',300,250,100,44,'Compressor','eleva a pressão')+cpBox('cy-cond',2,'hi',180,60,100,44,'Condensador','rejeita calor')+cpBox('cy-tank',3,'nt',60,120,92,34,'Tanque')+cpBox('cy-filt',4,'nt',60,180,92,34,'Filtro')+cpBox('cy-visor',5,'nt',60,240,92,34,'Visor')+cpBox('cy-exp',6,'lo',60,300,92,40,'Expansão','reduz a pressão')+cpBox('cy-evap',7,'lo',178,380,96,44,'Evaporador','absorve calor')+cpBox('cy-acc',8,'nt',300,380,88,44,'Acumulador')
+   +gauge('cy-gAP',300,150,'AP')+gauge('cy-gBP',300,318,'BP')+gauge('cy-gT2',95,60,'T2')+gauge('cy-gT1',240,380,'T1'),
+  steps:[
+   {t:'O ciclo completo',s:'Muda de estado a cada componente',side:'both',sideT:'Alta e baixa',f:[],
+    d:'O compressor e a válvula de expansão dividem o circuito em dois lados: alta pressão (vermelho), onde o fluido rejeita calor, e baixa pressão (azul), onde ele absorve calor dentro da câmara.',
+    tip:'Use as setas ou toque num componente do diagrama para seguir o fluido etapa por etapa.'},
+   {t:'Compressor',s:'Entra vapor frio, sai vapor superaquecido quente',side:'both',sideT:'Recebe baixa, entrega alta',f:['cy-comp','cy-pdesc','cy-gAP'],
+    d:'Aspira o vapor de baixa pressão vindo da sucção e o comprime. Pressão e temperatura sobem e o vapor sai pela linha de descarga, a parte mais quente do sistema. É ele que faz o fluido circular.',
+    tip:'O compressor só pode receber vapor: líquido na sucção (golpe de líquido) danifica válvulas e bielas. Confira corrente, ruído e as pressões nas tomadas AP e BP.'},
+   {t:'Condensador',s:'Vapor quente vira líquido subresfriado',side:'hi',sideT:'Alta',f:['cy-cond','cy-gT2','cy-hout','cy-houtT'],
+    d:'Rejeita calor para o ar em três zonas: primeiro tira o superaquecimento do vapor, depois condensa a temperatura constante e, nos últimos tubos, subresfria o líquido abaixo da saturação.',
+    tip:'Subresfriamento = saturação na pressão de alta − temperatura da linha de líquido (T2). Serpentina suja ou ventilador parado elevam a pressão de alta.'},
+   {t:'Tanque de líquido',s:'Líquido',side:'hi',sideT:'Alta',f:['cy-tank','cy-pliq'],
+    d:'Armazena o líquido que sobra e compensa as variações de carga, garantindo que só líquido siga para a linha. Comum em sistemas com válvula de expansão; sistemas com tubo capilar normalmente não têm.',
+    tip:'Com tanque, o subresfriamento tende a ser baixo mesmo com carga certa. Nesse caso apoie o diagnóstico no visor e no superaquecimento.'},
+   {t:'Filtro secador',s:'Líquido',side:'hi',sideT:'Alta',f:['cy-filt','cy-pliq'],
+    d:'Retém umidade, ácidos e partículas antes da válvula de expansão. Umidade pode congelar na válvula e formar ácidos que atacam o compressor.',
+    tip:'Saída mais fria que a entrada, ou suando, indica restrição. Troque o filtro sempre que o sistema for aberto.'},
+   {t:'Visor de líquido',s:'Líquido sem bolhas',side:'hi',sideT:'Alta',f:['cy-visor','cy-pliq'],
+    d:'Permite ver o refrigerante passando. Em operação estável deve aparecer líquido limpo. O indicador de umidade muda de cor quando há umidade no sistema.',
+    tip:'Bolhas constantes podem indicar falta de carga ou restrição antes do visor. Bolhas na partida ou em mudanças de carga podem ser normais.'},
+   {t:'Válvula de expansão',s:'Líquido vira mistura fria de líquido e vapor',side:'both',sideT:'Recebe alta, entrega baixa',f:['cy-exp','cy-pmist'],
+    d:'Restringe a passagem e derruba a pressão. Parte do líquido evapora na hora (flash) e isso resfria o restante. A válvula termostática ajusta a vazão pelo bulbo para manter o superaquecimento na saída do evaporador.',
+    tip:'Alimentando pouco: superaquecimento alto e evaporador com fome. Alimentando demais: superaquecimento baixo e risco de líquido no compressor.'},
+   {t:'Evaporador',s:'Mistura fria vira vapor superaquecido',side:'lo',sideT:'Baixa',f:['cy-evap','cy-gT1','cy-hin','cy-hinT'],
+    d:'A mistura ferve absorvendo calor do ar e do produto: é aqui que o frio acontece. Quando todo o líquido evapora, o vapor ainda ganha alguns graus de superaquecimento antes de sair.',
+    tip:'Superaquecimento = temperatura da linha de sucção na saída (T1, perto do bulbo) − saturação na pressão de baixa.'},
+   {t:'Acumulador e sucção',s:'Vapor frio de baixa pressão',side:'lo',sideT:'Baixa',f:['cy-acc','cy-psuc','cy-gBP','cy-comp'],
+    d:'O acumulador segura qualquer líquido que sobre do evaporador e a linha de sucção leva o vapor de volta ao compressor. O ciclo recomeça. O acumulador é opcional, comum onde há risco de retorno de líquido.',
+    tip:'Superaquecimento perto de zero e sucção muito fria chegando ao compressor indicam retorno de líquido. A pressão de baixa é lida aqui (BP).'}
+  ]},
+ cli:{label:'Climatização',exp:[522,558],resumo:[1,3,4,6],
+  intro:'O split é o mesmo ciclo dividido em duas partes: a unidade interna (evaporadora) tira calor e umidade do ambiente, e a unidade externa (condensadora) leva esse calor para fora.',
+  pipes:'<path class="pipe hi dim" id="cy-pdesc" d="M300 250 L300 60 L180 60"/><path class="pipe hi dim" id="cy-pliq" d="M180 60 L60 60 L60 170"/><path class="pipe lo dim" id="cy-pmist" d="M60 170 L60 380 L180 380"/><path class="pipe lo dim" id="cy-psuc" d="M180 380 L300 380 L300 250"/>',
+  deco:'<rect class="grp" x="4" y="6" width="352" height="330" rx="16"/><rect class="grp" x="4" y="346" width="352" height="90" rx="16"/><text class="grp-t" x="16" y="24">UNIDADE EXTERNA</text><text class="grp-t" x="16" y="426">UNIDADE INTERNA</text><text class="cy-side" x="180" y="135" text-anchor="middle" style="fill:var(--c-hot)">ALTA PRESSÃO</text><text class="cy-side" x="180" y="262" text-anchor="middle" style="fill:var(--c-cold)">BAIXA PRESSÃO</text>',
+  comps:()=>cpBox('cy-comp',1,'hi',300,250,100,44,'Compressor','eleva a pressão')+cpBox('cy-v4',2,'nt',300,150,96,34,'Válv. 4 vias')+cpBox('cy-cond',3,'hi',180,60,100,44,'Condensador','rejeita calor')+cpBox('cy-exp',4,'lo',60,170,92,40,'Expansão','capilar ou EEV')+cpBox('cy-sv',5,'nt',60,262,92,34,'Válv. serviço')+cpBox('cy-evap',6,'lo',180,380,100,44,'Evaporador','absorve calor')
+   +gauge('cy-gBP',300,318,'BP'),
+  steps:[
+   {t:'O ciclo completo',s:'Muda de estado a cada componente',side:'both',sideT:'Alta e baixa',f:[],
+    d:'A unidade externa concentra o compressor, o condensador e, na maioria dos modelos, o dispositivo de expansão. A interna tem o evaporador. As duas são ligadas pela linha fina e pela linha grossa.',
+    tip:'Use as setas ou toque num componente do diagrama para seguir o fluido etapa por etapa. O diagrama mostra o modo refrigeração.'},
+   {t:'Compressor',s:'Entra vapor frio, sai vapor quente de alta pressão',side:'both',sideT:'Recebe baixa, entrega alta',f:['cy-comp','cy-pdesc'],
+    d:'Normalmente rotativo ou scroll. No inverter, a placa varia a rotação para acompanhar a carga térmica do ambiente, por isso as pressões mudam junto com a frequência.',
+    tip:'Compare a corrente com a da etiqueta. No inverter, faça as leituras com o aparelho estabilizado ou no modo teste, quando o fabricante oferecer.'},
+   {t:'Válvula de 4 vias',s:'Vapor quente',side:'hi',sideT:'Alta',f:['cy-v4','cy-pdesc'],
+    d:'Existe só nos modelos quente/frio. Uma bobina solenoide inverte o sentido do fluxo: no aquecimento a unidade interna vira condensador e a externa vira evaporador.',
+    tip:'No modo aquecimento a linha grossa fica quente e com alta pressão. Antes de ler os manômetros, confirme em que modo o aparelho está.'},
+   {t:'Condensador',s:'Vapor quente vira líquido',side:'hi',sideT:'Alta',f:['cy-cond','cy-hout','cy-houtT'],
+    d:'Fica na unidade externa. O ventilador força o ar pela serpentina e o vapor quente condensa, levando para fora o calor que foi tirado do ambiente.',
+    tip:'Serpentina suja, ventilador fraco ou condensadora sem espaço (recirculando o próprio ar quente) elevam a pressão de alta e a corrente.'},
+   {t:'Dispositivo de expansão',s:'Líquido vira mistura fria',side:'both',sideT:'Recebe alta, entrega baixa',f:['cy-exp','cy-pmist'],
+    d:'Tubo capilar (comprimento e diâmetro fixos) nos modelos convencionais, ou válvula de expansão eletrônica (EEV) controlada pela placa em muitos inverters. Derruba a pressão e o fluido sai como mistura fria.',
+    tip:'Capilar obstruído deixa a baixa muito baixa e a corrente cai. Sistemas com capilar são sensíveis à quantidade de fluido: carregue por peso, conforme a etiqueta.'},
+   {t:'Linhas e válvulas de serviço',s:'Mistura fria na linha fina',side:'lo',sideT:'Baixa',f:['cy-sv','cy-pmist'],
+    d:'Como a expansão costuma ficar na condensadora, a linha fina já leva fluido de baixa pressão até a evaporadora. A linha grossa traz o vapor de volta. Cada linha tem uma válvula de serviço na unidade externa.',
+    tip:'Na instalação: porcas flangeadas no torque certo, teste de estanqueidade com nitrogênio e vácuo abaixo de 500 mícrons antes de abrir as válvulas.'},
+   {t:'Evaporador',s:'Mistura fria vira vapor',side:'lo',sideT:'Baixa',f:['cy-evap','cy-hin','cy-hinT'],
+    d:'Na unidade interna, a mistura ferve na serpentina e retira calor e umidade do ar. A água que condensa escorre para a bandeja e sai pelo dreno.',
+    tip:'Filtro ou serpentina sujos reduzem a vazão de ar, baixam a pressão e podem congelar a serpentina. Confira também o caimento da mangueira do dreno.'},
+   {t:'Retorno pela linha grossa',s:'Vapor frio de baixa pressão',side:'lo',sideT:'Baixa',f:['cy-psuc','cy-gBP','cy-comp'],
+    d:'O vapor volta pela linha grossa até a válvula de serviço da condensadora, onde se lê a pressão de baixa (BP), e o compressor recomeça o ciclo.',
+    tip:'Superaquecimento = temperatura da linha grossa − saturação na BP. O R410A é uma mistura: complete a carga sempre na fase líquida.'}
+  ]}
+};
+V.ciclo=()=>{const m=S.cyModo||'ref',c=CY[m];
+ return `<div class="view">${bar('Como funciona','Ciclo e componentes do sistema','home')}
+ <div class="seg" role="group" aria-label="Tipo de sistema">${Object.keys(CY).map(k=>`<button data-act="cyModo" data-m="${k}" aria-pressed="${k===m}">${CY[k].label}</button>`).join('')}</div>
+ <p class="cy-intro">${esc(c.intro)}</p>
+ <section class="glass cy-stage"><svg id="cySvg" viewBox="0 0 360 440" role="img" aria-labelledby="cySvgT"><title id="cySvgT">Diagrama animado do ciclo de ${c.label.toLowerCase()} com o fluido circulando</title>
+  ${c.deco}${c.pipes}<path id="cyTrack" d="M300 250 L300 60 L60 60 L60 380 L300 380 Z" fill="none" stroke="none"/><g id="cyParts"></g>${heatOut}${heatIn}${c.comps()}</svg>
+  <div class="cy-leg" aria-label="Legenda"><span><i style="width:10px;height:10px;border-radius:50%;border:2px solid var(--c-hot)"></i>vapor</span><span><i style="width:10px;height:10px;border-radius:50%;background:var(--c-warm)"></i>líquido</span><span><i style="width:20px;height:4px;border-radius:2px;background:var(--c-hot);opacity:.6"></i>alta pressão</span><span><i style="width:20px;height:4px;border-radius:2px;background:var(--c-cold);opacity:.7"></i>baixa pressão</span></div></section>
+ <section class="glass cy-card" aria-live="polite"><div class="cy-nav"><button class="icon-btn" data-act="cyPrev" aria-label="Etapa anterior">${I.back}</button><div class="cy-name"><span class="muted small" id="cyK"></span><h2 id="cyT"></h2></div><button class="icon-btn" data-act="cyNext" aria-label="Próxima etapa">${sv('<path d="M9 5l7 7-7 7"/>')}</button></div>
+  <dl class="rows" style="margin:0"><div><dt class="a">Fluido</dt><dd class="b" style="margin:0" id="cyS"></dd></div><div><dt class="a">Pressão</dt><dd class="b" style="margin:0"><span class="badge" id="cySide"></span></dd></div></dl>
+  <p class="cy-desc" id="cyD"></p><p class="cy-tip"><b>Na prática</b><span id="cyTip"></span></p></section>
+ <section class="hm-list"><div class="hm-h"><h2>O ciclo em 4 passos</h2></div><div class="cy-sum">${RESUMO.map(([t,x],i)=>`<button data-act="cyStep" data-i="${c.resumo[i]}"><span class="n">${i+1}</span><b>${t}</b><span class="x">${x}</span></button>`).join('')}</div></section></div>`};
+let cyRAF=null,cyParts=[],cyOff=0,cyLast=0,cyCol={};
+function cyShow(){const c=CY[S.cyModo||'ref'],n=c.steps.length-1;S.cyStep=((S.cyStep||0)+n+1)%(n+1);const st=c.steps[S.cyStep];
+ $('#cyK').textContent=S.cyStep?'Etapa '+S.cyStep+' de '+n:'Visão geral';$('#cyT').textContent=st.t;$('#cyS').textContent=st.s;
+ const b=$('#cySide');b.className='badge '+(st.side==='both'?'ex':st.side);b.textContent=st.sideT;$('#cyD').textContent=st.d;$('#cyTip').textContent=st.tip;
+ const svg=$('#cySvg');svg.classList.toggle('focus',st.f.length>0);svg.querySelectorAll('.dim').forEach(el=>el.classList.toggle('on',st.f.includes(el.id)))}
+function cyHex(h){h=h.trim().replace('#','');return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))}
+function cyMix(a,b,t){return'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')'}
+function cyState(L){const C=cyCol,cl=x=>Math.max(0,Math.min(1,x)),E=CY[S.cyModo||'ref'].exp;
+ if(L<22)return[cyMix(C.cool,C.hot,(L+22)/44),0];
+ if(L<260)return[cyMix(C.hot,C.hot,0),0];
+ if(L<360){const t=(L-260)/100;return[cyMix(C.hot,C.warm,t),cl((t-.15)/.6)]}
+ if(L<E[0])return[cyMix(C.warm,C.warm,0),1];
+ if(L<E[1]){const t=(L-E[0])/(E[1]-E[0]);return[cyMix(C.warm,C.cold,t),1-.4*t]}
+ if(L<820)return[cyMix(C.cold,C.cold,0),.6];
+ if(L<920){const t=(L-820)/100;return[cyMix(C.cold,C.cool,t),.6*cl(1-t/.85)]}
+ if(L<1098)return[cyMix(C.cool,C.cool,0),0];
+ return[cyMix(C.cool,C.hot,(L-1098)/44),0]}
+function cyFrame(now){const tr=$('#cyTrack');if(!tr||S.view!=='ciclo'){cyRAF=null;return}
+ const dt=Math.min(.05,(now-cyLast)/1000);cyLast=now;const tot=1120,N=cyParts.length;
+ cyOff=(cyOff+dt*60*(matchMedia('(prefers-reduced-motion: reduce)').matches?.3:1))%tot;
+ for(let i=0;i<N;i++){const L=(cyOff+i*tot/N)%tot,p=tr.getPointAtLength(L),[col,ph]=cyState(L),c=cyParts[i];
+  c.setAttribute('cx',p.x.toFixed(1));c.setAttribute('cy',p.y.toFixed(1));c.setAttribute('r',(2.6+2.2*ph).toFixed(2));c.setAttribute('stroke',col);c.setAttribute('fill',col);c.setAttribute('fill-opacity',(.1+.9*ph).toFixed(2))}
+ cyRAF=requestAnimationFrame(cyFrame)}
+function cyInit(){const cs=getComputedStyle(document.documentElement);['hot','warm','cold','cool'].forEach(k=>cyCol[k]=cyHex(cs.getPropertyValue('--c-'+k)));
+ const g=$('#cyParts');cyParts=[];for(let i=0;i<32;i++){const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('stroke-width','1.8');g.appendChild(c);cyParts.push(c)}
+ cyShow();if(!cyRAF){cyLast=performance.now();cyRAF=requestAnimationFrame(cyFrame)}}
+
+V.cliente=()=>{const c=S.curCli;const os=S.list.filter(o=>o.clienteId===c.id).sort((a,b)=>b.criado-a.criado);
+ return `<div class="view">${bar(c.nome,'Cliente · '+c.equips.length+' equipamento'+(c.equips.length===1?'':'s'),'home')}
+ ${field('Nome do cliente','nome','cli')}${field('Local / endereço','local','cli',{ph:'Endereço ou unidade'})}
+ ${driveOn()?`${field('E-mail do cliente','email','cli',{ph:'Para compartilhar a pasta do Drive',type:'email'})}${c.sharedWith?`<section class="space ok"><div><b>Pasta compartilhada no Drive</b><span>${esc(c.sharedWith)} vê todos os relatórios deste cliente.</span></div><a class="btn" href="${esc(c.driveUrl)}" target="_blank" rel="noopener">Abrir pasta</a></section>`:`<button class="btn block" data-act="driveShare">Compartilhar pasta do Drive com o cliente</button>`}`:''}
+ <section class="hm-list"><div class="hm-h"><h2>Equipamentos</h2></div>
+ ${c.equips.length?c.equips.map(e=>{const n=os.filter(o=>o.equipId===e.id).length;return `<div class="eq"><div><b>${esc(e.nome)}</b><small>${e.gas?esc(e.gas)+' · ':''}${n} OS</small></div><button class="ck-x" data-act="delEq" data-id="${e.id}" aria-label="Remover ${esc(e.nome)}">${I.x}</button></div>`}).join(''):'<p class="note">Nenhum equipamento cadastrado.</p>'}
+ <div class="inline">${field('Novo equipamento','_eq','tmp',{ph:'Ex.: Câmara de resfriados 01'})}<button class="btn primary" data-act="addEq" style="min-height:50px">Adicionar</button></div></section>
+ <button class="hm-new" data-act="novaCli" style="align-self:stretch;justify-content:center">${sv('<path d="M12 5v14M5 12h14"/>',20)}Nova OS para este cliente</button>
+ <section class="hm-list"><div class="hm-h"><h2>Histórico</h2></div>${os.length?os.map(osCard).join(''):'<p class="note">Nenhuma ordem para este cliente ainda.</p>'}</section></div>`};
+
+function painelEspaco(){const L=S.list,fb=L.reduce((t,o)=>t+fotosBytes(o),0),mb=L.reduce((t,o)=>t+miniBytes(o),0),nf=L.reduce((t,o)=>t+o.fotos.filter(p=>p.full).length,0);
+ const pes=[...L].filter(o=>fotosBytes(o)).sort((a,b)=>fotosBytes(b)-fotosBytes(a)).slice(0,5),conc=concluidasPesadas(),cb=conc.reduce((t,o)=>t+fotosBytes(o),0),d=+S.settings.autoLimpar||0;
+ const est=S.est&&S.est.usage!=null?`<div><dt class="a">Uso total do app no aparelho</dt><dd class="b" style="margin:0">${fmtMB(S.est.usage)}</dd></div>`:'';
+ return `<section class="hm-list"><div class="hm-h"><h2>Armazenamento</h2></div>
+ <div class="glass" style="padding:14px 16px"><dl class="rows" style="margin:0"><div><dt class="a">Fotos (${nf})</dt><dd class="b" style="margin:0">${fmtMB(fb)}</dd></div><div><dt class="a">Miniaturas</dt><dd class="b" style="margin:0">${fmtMB(mb)}</dd></div><div><dt class="a">Ordens</dt><dd class="b" style="margin:0">${L.length}</dd></div>${est}</dl></div>
+ ${pes.length?`<p class="legend" style="margin:4px 0 0">Ordens que mais ocupam</p>${pes.map(o=>`<div class="eq"><div><b>OS ${esc(o.numero)} · ${esc(o.cliente||'Sem cliente')}</b><small>${fmtMB(fotosBytes(o))} · ${o.status==='concluida'?'Concluída':'Em andamento'}</small></div>${o.status==='concluida'?`<button class="btn" data-act="liberarUma" data-id="${o.id}" style="min-height:40px;padding:0 14px;font-size:13px">Liberar</button>`:''}</div>`).join('')}`:''}
+ <button class="btn block" data-act="liberarTodas" ${cb?'':'disabled'}>Liberar espaço das concluídas${cb?' · '+fmtMB(cb):''}</button>
+ <fieldset><legend class="legend">Liberar automaticamente</legend><div class="chips">${[[0,'Desligado'],[30,'30 dias'],[60,'60 dias'],[90,'90 dias']].map(([v,l])=>`<button class="chip" data-act="autoLimpar" data-d="${v}" aria-pressed="${d===v}">${l}</button>`).join('')}</div>
+ <p class="note">${d?'Ordens concluídas há mais de '+d+' dias liberam as fotos grandes sozinhas ao abrir o app. Os dados e as miniaturas ficam.':'Escolha um prazo para o app liberar sozinho as fotos das ordens concluídas.'} O PDF enviado continua completo.</p></fieldset></section>`}
+V.empresa=()=>{const s=S.settings;return `<div class="view">${bar('Sua empresa','Aparece no topo de cada relatório','home')}
+ <div class="logo-prev"><div class="box">${s.logo?`<img src="${s.logo.data}" alt="Logo da empresa">`:'Sem logo'}</div><div style="flex:1">${photoBtn('logo',s.logo?'Trocar logo':'Enviar logo')}</div></div>
+ ${field('Nome da empresa','empresa','settings',{ph:'Ex.: Frio Forte Refrigeração'})}
+ <div class="grid2">${field('CNPJ','cnpj','settings',{ph:'00.000.000/0000-00',dec:true})}${field('Telefone','telefone','settings',{ph:'(11) 90000-0000',type:'tel'})}</div>
+ ${field('Responsável técnico','tecnico','settings',{ph:'Nome do técnico'})}
+ ${(s.modelos||[]).length?`<section class="hm-list"><div class="hm-h"><h2>Modelos de checklist</h2></div>${s.modelos.map(m=>`<div class="eq"><div><b>${esc(m.nome)}</b><small>${m.itens.length} itens</small></div><button class="ck-x" data-act="delModelo" data-id="${m.id}" aria-label="Excluir modelo ${esc(m.nome)}">${I.trash}</button></div>`).join('')}</section>`:''}
+ ${painelDrive()}
+ ${painelEspaco()}
+ <button class="btn danger" data-act="apagarTudo">${I.trash} Apagar todos os dados deste aparelho</button>
+ <div class="foot"><button class="btn primary big block" data-act="go" data-to="home">Salvar ${I.next}</button></div></div>`};
+
+function sugHTML(q){const k=norm(q);if(!k)return '';const ms=S.clientes.filter(c=>norm(c.nome).includes(k)).sort((a,b)=>(norm(b.nome)===k)-(norm(a.nome)===k)).slice(0,5);
+ return ms.map(c=>`<button class="sug-i ${norm(c.nome)===k?'exact':''}" data-act="pickCli" data-id="${c.id}"><b>${esc(c.nome)}</b><small>${norm(c.nome)===k?'Já cadastrado · toque para usar':'Cliente cadastrado'}${c.local?' · '+esc(c.local):''} · ${c.equips.length} equipamento${c.equips.length===1?'':'s'}</small></button>`).join('')}
+V.nova=()=>{const n=S.novo,cli=n.clienteId&&S.clientes.find(c=>c.id===n.clienteId);
+ const cliHTML=cli?`<div class="field"><span>Cliente</span><div class="sel-cli"><div><b>${esc(cli.nome)}</b><small>Cliente cadastrado${cli.local?' · '+esc(cli.local):''}</small></div><button class="hm-link" data-act="trocarCli" style="padding:8px 10px">Trocar</button></div></div>`
+  :`${field('Cliente','cliente','novo',{ph:'Digite para buscar ou cadastrar'})}<div class="sug" id="sug">${sugHTML(n.cliente)}</div>`;
+ const eqs=cli?cli.equips:[];
+ const eqHTML=eqs.length?`<fieldset><legend class="legend">Equipamento</legend><div class="chips">${eqs.map(e=>`<button class="chip" data-act="pickEq" data-id="${e.id}" aria-pressed="${n.equipId===e.id}">${esc(e.nome)}</button>`).join('')}<button class="chip" data-act="pickEq" data-id="" aria-pressed="${!n.equipId}">+ Novo</button></div></fieldset>${n.equipId?'':field('Nome do novo equipamento','equipamento','novo',{ph:'Ex.: Câmara de congelados · Unidade 02'})}`
+  :field('Equipamento','equipamento','novo',{ph:'Ex.: Câmara de congelados · Unidade 02'});
+ return `<div class="view">${bar('Nova ordem de serviço',TIPOS[n.tipo],'home')}
+ ${cliHTML}${S.novoErr?`<p class="err">${esc(S.novoErr)}</p>`:''}
+ ${field('Local','local','novo',{ph:'Endereço ou unidade'})}
+ ${eqHTML}
+ ${n.tipo!=='com'?'':`<fieldset><legend class="legend">Fluido refrigerante</legend><div class="chips">${GASES.map(g=>`<button class="chip" data-act="novoGas" data-g="${g}" aria-pressed="${n.gas===g}">${g}</button>`).join('')}</div></fieldset>`}
+ ${n.tipo==='prev'?`<fieldset><legend class="legend">Checklist</legend><div class="chips">${modelos().map(m=>`<button class="chip" data-act="novoModelo" data-m="${m.id}" aria-pressed="${n.modelo===m.id}">${esc(m.nome)} · ${m.itens.length}</button>`).join('')}</div><p class="note">Você pode adicionar ou remover itens depois, dentro da ordem.</p></fieldset>`:''}
+ <div class="foot"><button class="btn primary big block" data-act="criar">Iniciar serviço ${I.next}</button></div></div>`};
+
+function stepsNav(o){const st=STEPS[o.tipo];if(st.length<2)return '';return `<nav class="steps" style="grid-template-columns:repeat(${st.length},minmax(0,1fr))" aria-label="Etapas">${st.map((n,i)=>`<button class="step ${i===S.step?'on':i<S.step?'done':''}" data-act="step" data-i="${i}" ${i===S.step?'aria-current="step"':''}><i></i>${esc(n)}</button>`).join('')}</nav>`}
+
+function apTxt(l){return l==='high'?' Alta acima do esperado: verifique condensador sujo, ventilador do condensador, excesso de carga ou ar no sistema.':l==='low'?' Alta abaixo do esperado: pode indicar falta de carga ou compressor com baixa eficiência.':l==='ok'?' Pressão de alta dentro do esperado.':''}
+function calcHTML(o){const c=calc(o),st=S.settings,d=diag(c);
+ return `<div class="grid2"><div><div class="k">Superaquecimento</div><div class="v ${c.la&&c.la!=='ok'?c.la:''}">${c.sa==null?'—':f1(c.sa)+' K'}</div><div class="s">${c.outS?'Pressão fora da tabela':'Evap. sat. '+(c.te==null?'—':f1(c.te)+' °C')} · faixa ${esc(st.saMin)}–${esc(st.saMax)} K</div></div>
+ <div><div class="k">Sub-resfriamento</div><div class="v ${c.lr&&c.lr!=='ok'?c.lr:''}">${c.sr==null?'—':f1(c.sr)+' K'}</div><div class="s">${c.outD?'Pressão fora da tabela':'Cond. sat. '+(c.tc==null?'—':f1(c.tc)+' °C')} · faixa ${esc(st.srMin)}–${esc(st.srMax)} K</div></div></div>
+ ${d?`<div class="diag ${d.sev}" style="color:var(--${d.sev==='ok'?'ok':d.sev==='warn'?'warn':'bad'})">${d.sev==='ok'?I.ok:I.warn}<div><b style="color:var(--fg)">${esc(d.t)}</b><span>${esc(d.a)}</span></div></div>`:'<p class="note">Preencha pressões e temperaturas dos tubos para ver o diagnóstico.</p>'}
+ ${c.dr?`<div class="diag ${c.lap==='ok'||!c.lap?'ok':'warn'}" style="color:var(--${c.lap==='ok'||!c.lap?'ok':'warn'})">${c.lap&&c.lap!=='ok'?I.warn:I.ok}<div><b style="color:var(--fg)">Descarga esperada: ${Math.round(c.dr[0])} a ${Math.round(c.dr[1])} psig</b><span>Para ${f1(c.ta)} °C de ambiente.${apTxt(c.lap)}</span></div></div>`:c.ap!=null?`<p class="note">Condensação ${f1(c.ap)} K acima do ambiente${c.ap>20?'. Diferença alta: verifique limpeza do condensador, ventilador e presença de ar no sistema.':'.'}</p>`:''}`}
+
+function chartSVG(q,alvo){if(q.length<2)return '<p class="note">Registre ao menos duas leituras para ver a curva.</p>';
+ const W=320,H=150,pl=34,pr=12,pt=10,pb=22;const t0=q[0].t,t1=q[q.length-1].t;const vs=q.map(p=>p.v);
+ let lo=Math.min(...vs),hi=Math.max(...vs);if(alvo!=null){lo=Math.min(lo,alvo);hi=Math.max(hi,alvo)}if(hi-lo<2){hi+=1;lo-=1}
+ const X=t=>pl+(W-pl-pr)*((t-t0)/Math.max(1,t1-t0)),Y=v=>pt+(H-pt-pb)*(1-(v-lo)/(hi-lo));
+ const pts=q.map(p=>X(p.t).toFixed(1)+','+Y(p.v).toFixed(1));
+ const area=`M${X(t0).toFixed(1)},${(H-pb)} L${pts.join(' L')} L${X(t1).toFixed(1)},${H-pb} Z`;
+ return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Curva de queda de temperatura">
+ <line class="gd" x1="${pl}" y1="${Y(hi)}" x2="${W-pr}" y2="${Y(hi)}"/><line class="gd" x1="${pl}" y1="${Y(lo)}" x2="${W-pr}" y2="${Y(lo)}"/>
+ <text x="${pl-6}" y="${Y(hi)+3}" text-anchor="end">${f1(hi)}</text><text x="${pl-6}" y="${Y(lo)+3}" text-anchor="end">${f1(lo)}</text>
+ ${alvo!=null?`<line class="tg" x1="${pl}" y1="${Y(alvo)}" x2="${W-pr}" y2="${Y(alvo)}"/><text x="${W-pr}" y="${Y(alvo)-4}" text-anchor="end">alvo ${f1(alvo)} °C</text>`:''}
+ <path class="ar" d="${area}"/><polyline class="ln" points="${pts.join(' ')}"/>
+ ${q.map(p=>`<circle class="dt" cx="${X(p.t).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3"/>`).join('')}
+ <text x="${pl}" y="${H-6}">${fmtHora(t0)}</text><text x="${W-pr}" y="${H-6}" text-anchor="end">${fmtHora(t1)}</text></svg>`}
+
+function quedaStats(o){const q=o.queda;if(q.length<2)return '';const h=(q[q.length-1].t-q[0].t)/36e5;if(h<=0)return '';const rate=(q[0].v-q[q.length-1].v)/h;const alvo=num(o.camara.tp);
+ let extra='';if(alvo!=null&&rate>0){const falta=q[q.length-1].v-alvo;extra=falta<=0?' · Alvo atingido':' · Previsão para o alvo: '+(falta/rate<1?Math.round(falta/rate*60)+' min':f1(falta/rate)+' h')}
+ return `<p class="note">Queda de ${f1(rate)} °C/h em ${h<1?Math.round(h*60)+' min':f1(h)+' h'}${extra}</p>`}
+
+function photosHTML(o){const list=o.fotos.map((p,i)=>({p,i}));
+ return `${photoPair('os')}
+ ${list.length?`<div class="photos">${list.map(({p,i})=>`<figure class="ph"><img src="${thumbOf(p)}" alt="${esc(p.legenda||'Foto')}" loading="lazy" decoding="async"><figcaption class="cap"><input aria-label="Legenda da foto" data-bind="fotos.${i}.legenda" data-scope="os" value="${esc(p.legenda)}" placeholder="Legenda"><button data-act="delFoto" data-i="${i}" aria-label="Remover foto">${I.x}</button></figcaption></figure>`).join('')}</div>`:`<p class="note">Nenhuma foto ainda. Toque no botão acima para adicionar.</p>`}
+ ${field('Observações e recomendações','obs','os',{area:true,ph:'Ex.: recomenda-se limpeza do filtro a cada 30 dias'})}`}
+
+V.serv=()=>{const o=S.cur,st=STEPS[o.tipo],name=st[S.step],u='psig';let body='';
+ if(name==='Câmara'){body=`${field('Equipamento / unidade','equipamento','os')}${field('Temp. de projeto (°C)','camara.tp','os',{dec:true,ph:'Ex.: -18'})}${field('Observações','camara.obs','os',{area:true})}`}
+ else if(name==='Medições'){body=`<button class="ptr-hint" data-act="recalc">${sv('<path d="M12 5v14M6 13l6 6 6-6"/>',14)}Puxe a tela para baixo para recalcular</button><div class="grid2">${mf('Pressão de sucção','med.ps',u)}${mf('Temp. tubo sucção','med.ts','°C')}${mf('Pressão de descarga','med.pd',u)}${mf('Temp. tubo líquido','med.tl','°C')}${mf('Temp. ambiente','med.ta','°C')}${mf('Corrente compressor','med.ic','A')}</div>
+ <section class="result" id="calc" aria-live="polite">${calcHTML(o)}</section><p class="note">Sucção pela curva de orvalho e descarga pela curva de bolha do ${o.gas}. Meça a temperatura do tubo perto do bulbo e na saída do condensador.</p>`}
+ else if(name==='Degelo'){const d=o.degelo,n=num(d.int);body=`<fieldset><legend class="legend">Tipo de degelo</legend><div class="chips">${['Elétrico','Gás quente','Natural (ar)'].map(t=>`<button class="chip" data-act="degTipo" data-t="${t}" aria-pressed="${d.tipo===t}">${t}</button>`).join('')}</div></fieldset>
+ <div class="grid2">${field('Intervalo (h)','degelo.int','os',{dec:true,ph:'Ex.: 6'})}${field('Duração máx. (min)','degelo.dur','os',{dec:true,ph:'Ex.: 30'})}</div>${field('Temp. de término (°C)','degelo.fim','os',{dec:true,ph:'Ex.: 12'})}
+ <p class="note" id="degInfo">${n&&n>0?f1(24/n).replace(',0','')+' degelos por dia':'Informe o intervalo para ver quantos degelos por dia.'}</p>${field('Observações','degelo.obs','os',{area:true,ph:'Ex.: evaporador limpo após o primeiro degelo'})}`}
+ else if(name==='Queda T'){body=`<div class="inline">${field('Temperatura da câmara agora (°C)','_q','tmp',{dec:true,ph:'Ex.: 8,5'})}<button class="btn primary" data-act="addQ" style="min-height:50px">Registrar</button></div>
+ <div class="glass" style="padding:14px">${chartSVG(o.queda,num(o.camara.tp))}${quedaStats(o)}</div>
+ <div class="qlist">${o.queda.map((p,i)=>`<div class="qitem"><span>${fmtHora(p.t)}</span><b>${f1(p.v)} °C</b><button data-act="delQ" data-i="${i}" aria-label="Remover leitura">${I.x}</button></div>`).reverse().join('')}</div>`}
+ else if(name==='Checklist'){const L=o.prev,done=L.filter(x=>x.s).length;body=`<div class="progress"><div style="display:flex;justify-content:space-between;font-size:13px"><span class="muted">Checklist</span><b>${done} de ${L.length} itens</b></div><div class="tr"><i style="width:${L.length?Math.round(done/L.length*100):0}%"></i></div></div>
+ <div class="inline">${field('Novo item do checklist','_item','tmp',{ph:'Ex.: Teste do pressostato'})}<button class="btn primary" data-act="addItem" style="min-height:50px">Adicionar</button></div>
+ ${L.map((it,i)=>{const ph=o.fotos.filter(p=>p.itemId===it.id);return `<article class="check ${it.s||''}"><div class="ck-h"><h3>${esc(it.t)}</h3><button class="ck-x" data-act="delItem" data-i="${i}" aria-label="Remover item ${esc(it.t)}">${I.x}</button></div><div class="tri" role="group" aria-label="Situação de ${esc(it.t)}">${[['ok','OK'],['at','Atenção'],['nc','Não conforme']].map(([k,l])=>`<button class="${k}" data-act="chk" data-i="${i}" data-s="${k}" aria-pressed="${it.s===k}">${l}</button>`).join('')}</div>
+ ${it.s&&it.s!=='ok'?`<div class="sub"><input aria-label="Observação" data-bind="prev.${i}.obs" data-scope="os" value="${esc(it.obs)}" placeholder="Observação"></div>`:''}
+ ${ph.length?`<div class="thumbs">${ph.map(p=>`<img src="${thumbOf(p)}" alt="${esc(p.legenda)}" loading="lazy" decoding="async">`).join('')}</div>`:''}
+ <div class="seg pickseg sm" role="group" aria-label="Foto da execução de ${esc(it.t)}"><label class="segbtn on">${I.cam} Foto da execução<input class="pick" type="file" accept="image/*" capture="environment" data-photo="item" data-i="${i}"></label><label class="segbtn">${I.gal} Galeria<input class="pick" type="file" accept="image/*" data-photo="item" data-i="${i}" multiple></label></div></article>`}).join('')}
+ ${L.length?'':'<div class="empty">Checklist vazio. Adicione os itens no campo acima.</div>'}
+ ${L.length?`<button class="btn dashed block" data-act="salvarModelo">Salvar este checklist como modelo</button>`:''}`}
+ else if(name==='Defeito'){body=`${field('Defeito relatado pelo cliente','man.defeito','os',{area:true,ph:'Ex.: câmara não chega na temperatura'})}${field('Diagnóstico / causa encontrada','man.causa','os',{area:true,ph:'Ex.: contatora do compressor com contatos queimados'})}`}
+ else if(name==='Serviço'){body=`${field('Serviço executado','man.servico','os',{area:true,ph:'Ex.: troca da contatora e reaperto dos bornes'})}${field('Peças substituídas','man.pecas','os',{area:true,ph:'Uma por linha. Ex.: contatora 25 A'})}
+ <fieldset><legend class="legend">Situação ao final</legend><div class="chips">${Object.keys(MAN_SIT).map(k=>`<button class="chip" data-act="manSit" data-s="${k}" aria-pressed="${o.man.situacao===k}">${MAN_SIT[k][0]}</button>`).join('')}</div></fieldset>`}
+ else if(name==='Fotos'){body=photosHTML(o)}
+ const last=S.step===st.length-1;
+ return `<div class="view">${bar(TIPOS[o.tipo],'OS '+o.numero+' · '+(o.cliente||''),'home',`${o.tipo==='com'?`<span class="pill-tag">${o.gas}</span>`:''}<button class="icon-btn" data-act="delOS" aria-label="Excluir ordem">${I.trash}</button>`)}
+ ${stepsNav(o)}${body}
+ <div class="foot"><button class="btn primary big block" data-act="${last?'go':'nextStep'}" data-to="rel">${last?'Ir para o relatório':'Próxima etapa: '+esc(st[S.step+1])} ${I.next}</button></div></div>`};
+
+function espacoOS(o){const b=fotosBytes(o),freed=o.fotos.some(p=>!p.full);
+ if(o.status==='concluida'&&b)return `<section class="space"><div><b>${fmtMB(b)} em fotos nesta ordem</b><span>${o.drive&&o.drive.ok?'Já há uma cópia no Google Drive. ':o.icloud?'Já há uma cópia no iCloud. ':''}O PDF já gerado continua completo. Liberar apaga as fotos grandes deste aparelho e mantém as miniaturas.</span></div><button class="btn" data-act="liberarOS">Liberar espaço</button></section>`;
+ if(freed&&o.fotos.length)return `<p class="note" style="text-align:center">As fotos desta ordem foram liberadas e estão só em miniatura. Um PDF novo sai com fotos pequenas.</p>`;return ''}
+V.rel=()=>{const o=S.cur;let rows=[['Cliente',o.cliente],['Local',o.local],['Equipamento',o.equipamento],['Fotos',o.fotos.length+' anexada'+(o.fotos.length===1?'':'s')]];
+ if(o.tipo==='com'){const c=calc(o),d=diag(c);rows.splice(3,0,['Fluido',o.gas]);rows.push(['Superaquecimento',c.sa==null?'—':f1(c.sa)+' K'],['Sub-resfriamento',c.sr==null?'—':f1(c.sr)+' K'],['Diagnóstico',d?d.t:'—'],['Leituras de queda',o.queda.length])}
+ if(o.tipo==='man'){rows.push(['Situação',o.man.situacao?MAN_SIT[o.man.situacao][0]:'—'])}
+ if(o.tipo==='prev'){const cnt=k=>o.prev.filter(x=>x.s===k).length;rows.push(['OK',cnt('ok')],['Atenção',cnt('at')],['Não conforme',cnt('nc')],['Sem resposta',o.prev.filter(x=>!x.s).length])}
+ return `<div class="view">${bar('Relatório','OS '+o.numero+' · '+TIPOS[o.tipo],'serv')}
+ <section class="glass"><dl class="rows" style="margin:0">${rows.map(([a,b])=>`<div><dt class="a">${esc(a)}</dt><dd class="b" style="margin:0">${esc(b===''||b==null?'—':b)}</dd></div>`).join('')}</dl></section>
+ ${S.settings.empresa?'':'<p class="warnbox">Cadastre sua empresa (ícone de perfil na tela inicial) para o nome e o logo dela saírem no PDF.</p>'}
+ <fieldset><legend class="legend">Assinatura do cliente</legend><div class="sigwrap"><canvas id="sig" aria-label="Área de assinatura"></canvas>${o.assinatura?'':'<span class="hint">Assine aqui com o dedo</span>'}</div><button class="btn" data-act="limparSig" style="align-self:flex-start">Limpar assinatura</button></fieldset>
+ ${field('Nome de quem assina','assinante','os',{ph:'Responsável no cliente'})}
+ <div id="driveBox">${driveBoxInner(o)}</div>${espacoOS(o)}<div class="foot foot-rel"><div class="grid2"><button class="btn" data-act="pdf" id="pdfBtn" ${S.fullReady===o.id?'':'disabled'}>${I.pdf} Baixar PDF</button>
+ ${S.waPend===o.id?`<a class="btn primary" id="waBtn" href="${waLink(o)}" target="_blank" rel="noopener">${I.wa} WhatsApp</a>`:`<button class="btn primary" data-act="enviar" id="shareBtn" ${S.fullReady===o.id?'':'disabled'}>${I.wa} WhatsApp</button>`}</div>
+ <p class="note" id="envioNote" style="text-align:center${S.waPend===o.id?';color:var(--warn)':''}">${S.waPend===o.id?'PDF salvo no aparelho. Toque em WhatsApp, escolha o contato e anexe o PDF pelo clipe. A mensagem já vai escrita.':(S.fullReady===o.id?'O WhatsApp abre com o PDF anexado e uma mensagem pronta.':'Preparando as fotos para o PDF…')}</p></div></div>`};
+
+function promptBox(title,label,ph,okLabel,onOk){const m=$('#modal');m.innerHTML=`<div class="glass" role="dialog" aria-modal="true" aria-labelledby="pt"><h2 id="pt" class="h2">${esc(title)}</h2><label class="field" for="pb-in"><span>${esc(label)}</span><input class="inp" id="pb-in" placeholder="${esc(ph)}" autocomplete="off"></label><p class="err" id="pb-err" hidden></p><div class="acts"><button class="btn" data-m="no">Cancelar</button><button class="btn primary" data-m="yes">${esc(okLabel)}</button></div></div>`;
+ m.hidden=false;const inp=$('#pb-in');inp.focus();const ok=()=>{const v=inp.value.trim();if(!v){const e=$('#pb-err');e.textContent='Preencha o campo.';e.hidden=false;return}const r=onOk(v);if(r){const e=$('#pb-err');e.textContent=r;e.hidden=false;return}m.hidden=true};
+ inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();ok()}};m.onclick=e=>{const b=e.target.closest('[data-m]');if(e.target===m||b&&b.dataset.m==='no')m.hidden=true;else if(b)ok()}}
+function liberar(o){let b=0;o.fotos.forEach(p=>{if(p.full){b+=p.size||0;delFull(p.id);p.full=false}});if(b)markOS(o);return b}
+function concluidasPesadas(){return S.list.filter(o=>o.status==='concluida'&&fotosBytes(o)>0)}
+async function autoLimpeza(){const d=+S.settings.autoLimpar||0;if(!d)return;const lim=Date.now()-d*864e5;let b=0,n=0;
+ S.list.forEach(o=>{if(o.status==='concluida'&&o.concluido&&o.concluido<lim&&fotosBytes(o)){b+=liberar(o);n++}});if(n)toast('Espaço liberado: '+fmtMB(b)+' de '+n+' ordem'+(n>1?'s':'')+' concluída'+(n>1?'s':'')+' há mais de '+d+' dias.')}
+async function estimar(){try{if(navigator.storage&&navigator.storage.estimate){const e=await navigator.storage.estimate();S.est=e;if(S.view==='empresa')render()}}catch(e){}}
+/* ---------- Google Drive (conector do Claude): SnowField Tech › Cliente › OS ---------- */
+const MCP={api:null,files:false,checked:false},DRV='Google Drive';S.drv={};
+async function initMCP(){try{const m=window.claude&&window.claude.use?await window.claude.use('mcp'):null;MCP.api=m;if(m){try{const l=await m.listTools();MCP.files=!!(l&&l.fileArgs)}catch(e){}}}catch(e){}MCP.checked=true;if(['empresa','rel','cliente'].includes(S.view))render()}
+const nuvem=()=>S.settings.nuvem||(S.settings.drive&&S.settings.drive.on?'google':'');
+const driveOn=()=>!!(MCP.api&&nuvem()==='google'&&S.settings.drive&&S.settings.drive.on);
+const icloudOn=()=>nuvem()==='icloud'||nuvem()==='gshare'||(nuvem()==='google'&&MCP.checked&&!MCP.api);
+const nuvemNome=()=>nuvem()==='icloud'?'iCloud':'Google Drive';
+const nuvemDica=()=>nuvem()==='icloud'?'Escolha Salvar em Arquivos › iCloud Drive.':'Escolha o app Drive e a pasta SnowField Tech.';
+function driveErr(e){const c=e&&e.code;return ({server_not_connected:'Conecte o Google Drive em claude.ai, em Configurações › Conectores, e toque em Tentar de novo.',needs_reauth:'A conexão com o Google Drive expirou. Reconecte em claude.ai, em Configurações › Conectores.',selection_required:'Escolha qual conta do Google Drive usar no aviso do Claude e tente de novo.',not_in_manifest:'O acesso ao Drive não foi permitido para este app. Toque em Tentar de novo e permita.',approval_required:'O envio precisa da sua permissão. Toque em Tentar de novo e permita.',consent_required:'O envio precisa da sua permissão. Toque em Tentar de novo e permita.',blocked_by_policy:'O Google Drive está bloqueado para esta conta.',not_granted:'O Drive não está disponível nesta visualização.',capability_disabled:'O Drive não está disponível nesta visualização.',too_big:'O PDF ficou grande demais para enviar daqui. As fotos foram enviadas.'})[c]||(c==='tool_error'?'O Drive recusou o envio. Toque em Tentar de novo.':'O Drive não respondeu. Confira a internet e toque em Tentar de novo.')}
+async function dcall(tool,input){const r=await MCP.api.callTool(DRV,tool,input);return r&&r.payload!=null?r.payload:r}
+const qs=v=>String(v).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+const fid=r=>r&&(r.id||(r.file&&r.file.id));
+const furl=(r,id)=>(r&&(r.viewUrl||r.webViewLink))||('https://drive.google.com/drive/folders/'+id);
+const slugify=v=>String(v||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40);
+function b64(u){let s='';for(let i=0;i<u.length;i+=32768)s+=String.fromCharCode.apply(null,u.subarray(i,i+32768));return btoa(s)}
+function blobBytes(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(new Uint8Array(r.result));r.onerror=()=>rej(r.error);r.readAsArrayBuffer(b)})}
+async function dFolder(title,parentId){const q="title = '"+qs(title)+"' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"+(parentId?" and parentId = '"+qs(parentId)+"'":" and owner = 'me'");
+ let r=await dcall('search_files',{query:q,pageSize:1,excludeContentSnippets:true});const f=r&&r.files&&r.files[0];if(f&&f.id)return {id:f.id,url:furl(f,f.id)};
+ r=await dcall('create_file',Object.assign({title,contentMimeType:'application/vnd.google-apps.folder'},parentId?{parentId}:{}));const id=fid(r);if(!id)throw {code:'tool_error'};return {id,url:furl(r,id)}}
+async function ensureRoot(){const d=S.settings.drive||(S.settings.drive={});if(d.rootId)return d.rootId;const f=await dFolder('SnowField Tech');d.rootId=f.id;d.rootUrl=f.url;markS();return f.id}
+async function ensureCli(c){if(c.driveId)return c.driveId;const root=await ensureRoot();const f=await dFolder(c.nome,root);c.driveId=f.id;c.driveUrl=f.url;markC();return f.id}
+const osPasta=o=>'OS '+o.numero+' · '+TIPOS[o.tipo]+' · '+new Date(o.criado).toLocaleDateString('pt-BR').replace(/\//g,'-');
+async function upFile(title,name,mime,bytes,parentId){const inp={title,parentId,contentMimeType:mime,disableConversionToGoogleType:true};
+ if(MCP.files)inp.base64Content={$file:{data:bytes,name,type:mime}};else{if(bytes.length>700000)throw {code:'too_big'};inp.base64Content=b64(bytes)}
+ const id=fid(await dcall('create_file',inp));if(!id)throw {code:'tool_error'};return id}
+async function enviarDrive(o,force,retried){if(!driveOn())return;const st=S.drv[o.id]={st:'sending',n:0,tot:0,msg:''};paintDrive(o);
+ try{await prepFull(o);const c=cliOf(o);const parent=c?await ensureCli(c):await ensureRoot();
+  o.drive=o.drive||{fotos:{}};o.drive.fotos=o.drive.fotos||{};
+  if(!o.drive.folderId){const f=await dFolder(osPasta(o),parent);o.drive.folderId=f.id;o.drive.url=f.url;markOS(o)}
+  const fotos=o.fotos.filter(p=>p.full&&!o.drive.fotos[p.id]);const needPdf=force||!o.drive.pdfId;st.tot=fotos.length+(needPdf?1:0);paintDrive(o);
+  for(const p of fotos){const b=FULL[p.id]||await getFull(p.id);if(b){const n=String(o.fotos.indexOf(p)+1).padStart(2,'0');const nm='foto-'+n+'.jpg';
+    o.drive.fotos[p.id]=await upFile('Foto '+n+(p.legenda?' - '+p.legenda.slice(0,60):'')+'.jpg',nm,'image/jpeg',b,o.drive.folderId);markOS(o)}st.n++;paintDrive(o)}
+  if(needPdf){const r=buildPDF(o);const bytes=await blobBytes(r.blob);try{o.drive.pdfId=await upFile(r.filename,r.filename,'application/pdf',bytes,o.drive.folderId)}catch(e){if(e&&e.code==='too_big'){st.aviso=driveErr(e)}else throw e}st.n++;markOS(o)}
+  o.drive.at=Date.now();o.drive.ok=true;markOS(o);st.st='ok'}
+ catch(e){/* pasta apagada no Drive: refaz o caminho uma vez */
+  if(e&&e.code==='tool_error'&&!retried){if(o.drive){o.drive.folderId=null}const c=cliOf(o);if(c){c.driveId=null;markC()}if(S.settings.drive)S.settings.drive.rootId=null;markS();return enviarDrive(o,force,true)}
+  st.st='err';st.msg=driveErr(e)}
+ paintDrive(o)}
+function icloudBox(o){const d=o.icloud,n=nuvemNome();return `<section class="space ${d?'ok':''}"><div><b>${d?'Enviado ao '+n+' em '+new Date(d.at).toLocaleDateString('pt-BR'):n}</b><span>${d?'Para salvar de novo, toque ao lado.':'Abre a tela de compartilhar com o PDF e as fotos. '+nuvemDica()}</span></div><button class="btn" data-act="icloudSalvar" ${S.fullReady===o.id?'':'disabled'}>${d?'Salvar de novo':'Salvar no '+n}</button></section>`}
+function driveBoxInner(o){if(icloudOn())return icloudBox(o);if(!driveOn())return '';const st=S.drv[o.id],d=o.drive;
+ if(st&&st.st==='sending')return `<section class="space"><div><b>Enviando para o Google Drive…</b><span>${st.tot?st.n+' de '+st.tot+' arquivos':'Preparando as pastas'}</span></div></section>`;
+ if(st&&st.st==='err')return `<section class="space warn"><div><b>Não foi possível enviar ao Drive</b><span>${esc(st.msg)}</span></div><button class="btn" data-act="driveSend">Tentar de novo</button></section>`;
+ if(d&&d.ok)return `<section class="space ok"><div><b>Salvo no Google Drive</b><span>${st&&st.aviso?esc(st.aviso):'PDF e fotos em SnowField Tech › '+esc(o.cliente||'Cliente')+'.'}</span></div><a class="btn" href="${esc(d.url)}" target="_blank" rel="noopener">Abrir pasta</a></section>`;
+ return `<section class="space"><div><b>Ainda não está no Drive</b><span>${o.status==='concluida'?'Toque para enviar o PDF e as fotos.':'Vai para o Drive quando você baixar ou enviar o PDF.'}</span></div><button class="btn" data-act="driveSend">Salvar no Drive</button></section>`}
+function paintDrive(o){const el=$('#driveBox');if(el&&S.cur===o)el.innerHTML=driveBoxInner(o)}
+function painelDrive(){const d=S.settings.drive||{},n=nuvem();let body;
+ if(n==='google'&&driveOn()){const falta=S.list.filter(o=>o.status==='concluida'&&!(o.drive&&o.drive.ok)).length;
+  body=`<div class="space ok"><div><b>Google Drive · automático</b><span>Ordens concluídas vão para SnowField Tech › Cliente › OS.</span></div>${d.rootUrl?`<a class="btn" href="${esc(d.rootUrl)}" target="_blank" rel="noopener">Abrir pasta</a>`:''}</div>
+  ${falta?`<button class="btn block" data-act="driveTodas">Enviar concluídas que faltam · ${falta}</button>`:''}`}
+ else if(n==='google'&&!MCP.checked)body='<p class="note">Verificando o Google Drive…</p>';
+ else if(n==='google'&&MCP.api)body=`<div class="space warn"><div><b>Google Drive indisponível aqui</b><span>Abra o app pelo Claude com o conector do Google Drive ligado para o envio automático voltar a funcionar.</span></div></div>`;
+ else if(n==='icloud')body=`<div class="space ok"><div><b>iCloud Drive · pelo iPhone</b><span>No relatório de cada ordem, toque em Salvar no iCloud e escolha Salvar em Arquivos › iCloud Drive. Crie uma pasta SnowField Tech para guardar tudo junto.</span></div></div>`;
+ else if(n==='gshare'||(n==='google'&&MCP.checked&&!MCP.api))body=`<div class="space ok"><div><b>Google Drive · pela tela de compartilhar</b><span>No relatório de cada ordem, toque em Salvar no Google Drive e escolha o app Drive. Crie uma pasta SnowField Tech para guardar tudo junto.</span></div></div>`;
+ else body=`<p class="note">Guarde o PDF e as fotos de cada ordem na nuvem. Assim você pode liberar espaço no celular sem perder nada.</p><button class="btn primary block" data-act="nuvemEscolher">Ativar nuvem</button>`;
+ if(n)body+=`<div class="grid2"><button class="btn" data-act="nuvemEscolher">Trocar nuvem</button><button class="btn" data-act="nuvemDesligar">Desativar</button></div>`;
+ return `<section class="hm-list"><div class="hm-h"><h2>Nuvem</h2></div>${body}</section>`}
+function nuvemModal(){const m=$('#modal'),g=!!MCP.api;
+ m.innerHTML=`<div class="glass" role="dialog" aria-modal="true" aria-labelledby="nt"><h2 id="nt" class="h2">Ativar nuvem</h2><p class="muted small" style="margin-top:-8px">Onde guardar os relatórios e as fotos</p>
+ <div class="tipos"><button class="tipo-opt" data-n="google"><span class="ic">${sv('<path d="M8 4h8l5 9-4 7H7l-4-7z"/><path d="M8 4l9 16M16 4L7 20M3 13h18" stroke-width="1.3"/>',24)}</span><span><b>Google Drive</b><small>${g?'Automático: envia sozinho ao concluir cada ordem':'Pela tela de compartilhar: escolha o app Drive em cada envio'}</small></span>${I.next}</button>
+ <button class="tipo-opt" data-n="icloud"><span class="ic">${sv('<path d="M7 18h10a4 4 0 00.6-7.96A6 6 0 006.2 9.1 4.5 4.5 0 007 18z"/>',24)}</span><span><b>iCloud Drive</b><small>Pelo iPhone: escolha Salvar em Arquivos em cada envio</small></span>${I.next}</button></div>
+ <button class="btn" data-m="no">Cancelar</button></div>`;
+ m.hidden=false;m.onclick=async e=>{const b=e.target.closest('.tipo-opt');if(b&&!b.disabled){m.hidden=true;if(b.dataset.n==='icloud'||!g){const ic=b.dataset.n==='icloud';S.settings.nuvem=ic?'icloud':'gshare';markS();render();toast((ic?'iCloud Drive':'Google Drive')+' ativado. Use Salvar no '+(ic?'iCloud':'Google Drive')+' no relatório de cada ordem.')}else{try{toast('Conectando ao Google Drive…');await ensureRoot();S.settings.drive.on=true;S.settings.nuvem='google';markS();render();toast('Google Drive ativado. As próximas ordens concluídas vão para lá.')}catch(err){render();toast(driveErr(err))}}return}if(e.target===m||e.target.closest('[data-m="no"]'))m.hidden=true}}
+/* iCloud: monta PDF e fotos na hora do toque e abre a tela de compartilhar do iPhone */
+function salvarICloud(){const o=S.cur;if(!window.jspdf){toast('O gerador de PDF não carregou. Verifique a internet e abra a página de novo.');return}
+ let files=[];try{const r=buildPDF(o);files.push(new File([r.blob],r.filename,{type:'application/pdf'}));o.fotos.forEach((p,i)=>{const b=FULL[p.id];if(b)files.push(new File([b],'OS-'+o.numero+'-foto-'+String(i+1).padStart(2,'0')+(p.legenda?'-'+slugify(p.legenda):'')+'.jpg',{type:'image/jpeg'}))})}catch(e){toast('Não foi possível preparar os arquivos. Tente de novo.');return}
+ const ok=navigator.share&&navigator.canShare&&navigator.canShare({files});
+ if(!ok){baixarPDF().then(()=>toast('Este aparelho não deixa salvar direto daqui. O PDF foi baixado: envie para a nuvem pelo app de arquivos.'));return}
+ navigator.share({files,title:'OS '+o.numero}).then(()=>{o.icloud={at:Date.now()};markOS(o);paintDrive(o);if(o.status!=='concluida')concluir(o);toast(nuvem()==='icloud'?'Enviado. Confira em Arquivos › iCloud Drive.':'Enviado. Confira no app Drive.')}).catch(e=>{if(e&&e.name==='AbortError')return;baixarPDF().then(()=>toast('Não foi possível abrir a tela de compartilhar. O PDF foi baixado.'))})}
+/* ---------- escolher o tipo da nova OS ---------- */
+function escolherTipo(cliId){const m=$('#modal'),ic={};ATALHOS.forEach(([t,,d])=>ic[t]=d);
+ m.innerHTML=`<div class="glass" role="dialog" aria-modal="true" aria-labelledby="tt"><h2 id="tt" class="h2">Nova ordem de serviço</h2><p class="muted small" style="margin-top:-8px">Escolha o tipo de serviço</p>
+ <div class="tipos">${NOVOS.map(t=>`<button class="tipo-opt" data-t="${t}" data-cli="${cliId||''}"><span class="ic">${sv(ic[t],24)}</span><span><b>${TIPOS[t]}</b><small>${TIPOS_SUB[t]}</small></span>${I.next}</button>`).join('')}</div>
+ <button class="btn" data-m="no">Cancelar</button></div>`;
+ m.hidden=false;m.querySelector('.tipo-opt').focus();
+ m.onclick=e=>{const b=e.target.closest('.tipo-opt');if(b){m.hidden=true;ACT.nova(b);return}if(e.target===m||e.target.closest('[data-m="no"]'))m.hidden=true}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#modal').hidden)$('#modal').hidden=true});
+
+/* ---------- render ---------- */
+function render(scrollTop){$('#app').innerHTML=V[S.view]();if(scrollTop)window.scrollTo(0,0);if(S.view==='rel'){initSig();if(S.fullReady!==S.cur.id){const o=S.cur;prepFull(o).then(()=>{S.fullReady=o.id;if(S.view==='rel'&&S.cur===o)render()})}}if(S.view==='ciclo')cyInit()}
+function go(v){if(v==='empresa')estimar();if(v!=='rel'&&S.view==='rel'){S.fullReady=null;soltaFull()}if(v==='home')S.cur=S.view==='home'?null:S.cur;S.view=v;render(true);flush()}
+
+/* ---------- assinatura ---------- */
+function initSig(){const c=$('#sig');if(!c)return;const r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);const x=c.getContext('2d');x.scale(dpr,dpr);x.fillStyle='#fff';x.fillRect(0,0,r.width,r.height);x.strokeStyle='#13202A';x.lineWidth=2.2;x.lineCap='round';x.lineJoin='round';
+ if(S.cur.assinatura){const im=new Image();im.onload=()=>x.drawImage(im,0,0,r.width,r.height);im.src=S.cur.assinatura}
+ let drawing=false,last=null;const pos=e=>{const b=c.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top]};
+ c.onpointerdown=e=>{drawing=true;last=pos(e);c.setPointerCapture(e.pointerId);const h=c.parentNode.querySelector('.hint');if(h)h.remove()};
+ c.onpointermove=e=>{if(!drawing)return;const p=pos(e);x.beginPath();x.moveTo(last[0],last[1]);x.lineTo(p[0],p[1]);x.stroke();last=p};
+ const end=()=>{if(!drawing)return;drawing=false;S.cur.assinatura=c.toDataURL('image/png');markOS(S.cur)};c.onpointerup=end;c.onpointercancel=end}
+
+/* ---------- fotos ---------- */
+/* Abre a foto sem endereço blob: (bloqueado em páginas publicadas): decodifica direto o arquivo, ou lê como data: */
+async function loadImg(file){
+ if(window.createImageBitmap){try{return await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){try{return await createImageBitmap(file)}catch(e2){}}}
+ const url=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error||new Error('read'));r.readAsDataURL(file)});
+ return await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('img'));im.src=url})}
+async function compress(file,max,type,q){const img=await loadImg(file);let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');if(type==='image/jpeg'){x.fillStyle='#fff';x.fillRect(0,0,w,h)}x.drawImage(img,0,0,w,h);if(img.close)img.close();return {data:c.toDataURL(type,q),w,h}}
+/* Fotos: foto cheia (1280 px, JPEG) guardada em binário na chave img:<id>; a OS guarda só a miniatura (320 px) para as telas */
+const FOTO_MAX=1280,FOTO_Q=.62,MINI_MAX=320,MINI_Q=.6;
+const FULL={};
+function dataURLBytes(u){const b=atob(u.split(',')[1]);const a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
+function drawTo(img,max){let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;const k=Math.min(1,max/Math.max(w,h));w=Math.round(w*k);h=Math.round(h*k);const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);return c}
+function jpegBytes(c,q){return new Promise(res=>{const fb=()=>res(dataURLBytes(c.toDataURL('image/jpeg',q)));try{if(!c.toBlob)return fb();c.toBlob(b=>{if(!b)return fb();const r=new FileReader();r.onload=()=>res(new Uint8Array(r.result));r.onerror=fb;r.readAsArrayBuffer(b)},'image/jpeg',q)}catch(e){fb()}})}
+async function putFull(id,bytes){if(DB.ok&&await idbSet('img:'+id,bytes))return true;FULL[id]=bytes;if(DB.ok)toast('Pouco espaço no aparelho: a foto ficou só nesta sessão.');return false}
+async function getFull(id){if(FULL[id])return FULL[id];const v=await idbGet('img:'+id);return v instanceof Uint8Array?v:v&&v.byteLength!=null?new Uint8Array(v):null}
+function delFull(id){delete FULL[id];idbDel('img:'+id)}
+async function makePhoto(src,id){const img=src instanceof Blob?await loadImg(src):src;const big=drawTo(img,FOTO_MAX);const mini=drawTo(img,MINI_MAX);if(img.close)img.close();
+ const bytes=await jpegBytes(big,FOTO_Q);id=id||uid();await putFull(id,bytes);return {id,w:big.width,h:big.height,thumb:mini.toDataURL('image/jpeg',MINI_Q),size:bytes.length,full:true}}
+const thumbOf=p=>p.thumb||p.data||'';
+const fmtMB=b=>b<1048576?Math.max(1,Math.round(b/1024))+' KB':(b/1048576).toFixed(1).replace('.',',')+' MB';
+const fotosBytes=o=>o.fotos.reduce((t,p)=>t+(p.full?p.size||0:0),0);
+const miniBytes=o=>o.fotos.reduce((t,p)=>t+Math.round((thumbOf(p).length)*.75),0);
+/* carrega as fotos cheias de uma ordem antes do PDF (o envio pelo WhatsApp precisa montar o PDF na hora do toque) */
+async function prepFull(o){for(const p of o.fotos){if(p.full&&!FULL[p.id]){const b=await getFull(p.id);if(b)FULL[p.id]=b;else p.full=false}}}
+function soltaFull(){if(!DB.ok)return;Object.keys(FULL).forEach(k=>delete FULL[k])}
+async function onPhoto(el){const files=[...el.files];if(!files.length)return;const kind=el.dataset.photo;
+ try{
+  if(kind==='logo'){const p=await compress(files[0],480,'image/png');S.settings.logo=p;markS();render()}
+  else if(kind==='item'){const it=S.cur.prev[+el.dataset.i];if(!it)return;for(const f of files){const p=await makePhoto(f);S.cur.fotos.push(Object.assign(p,{momento:'durante',legenda:it.t,itemId:it.id}))}markOS(S.cur);render();toast((files.length>1?files.length+' fotos vinculadas a ':'Foto vinculada a ')+'“'+it.t+'”')}
+  else{for(const f of files){const p=await makePhoto(f);S.cur.fotos.push(Object.assign(p,{momento:S.momento,legenda:''}))}markOS(S.cur);render();toast(files.length>1?files.length+' fotos adicionadas':'Foto adicionada')}
+ }catch(e){toast('Não foi possível abrir essa imagem. Tente outra foto.')}}
+
+/* ---------- PDF ---------- */
+/* logo da marca para o rodapé do PDF (versão escura do floco, para papel branco) */
+let BRAND_PNG=null;
+function prepBrand(){try{const svg='<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="-50 -50 100 100">'+LOGO_SVG.split('ID').join('pdfl').split('#E2F3FA').join('#2E6178')+'</svg>';
+ const im=new Image();im.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=160;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,160,160);x.drawImage(im,0,0,160,160);BRAND_PNG=c.toDataURL('image/jpeg',.9)}catch(e){}};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}catch(e){}}
+function buildPDF(o){const st=S.settings;
+ const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+ const W=210,H=297,M=14,CW=W-2*M;let y=M;
+ const T=s=>String(s??'').replace(/[−–—]/g,'-').replace(/×/g,'x').replace(/[“”]/g,'"').replace(/[^\x00-\xFF]/g,'');
+ const need=h=>{if(y+h>H-16){doc.addPage();y=M}};
+ const ink=()=>doc.setTextColor(19,32,42),gray=()=>doc.setTextColor(88,104,116);
+ let tx=M;
+ if(st.logo){const lh=16,lw=Math.min(42,lh*st.logo.w/st.logo.h);doc.addImage(st.logo.data,'PNG',M,y,lw,lh);tx=M+lw+6}
+ doc.setFont('helvetica','bold');doc.setFontSize(14);ink();doc.text(T(st.empresa||'Empresa'),tx,y+5.5);
+ doc.setFont('helvetica','normal');doc.setFontSize(9);gray();
+ const le=[st.cnpj&&'CNPJ '+st.cnpj,st.telefone].filter(Boolean).join('   |   ');if(le)doc.text(T(le),tx,y+10.5);
+ if(st.tecnico)doc.text(T('Responsável técnico: '+st.tecnico),tx,y+15);
+ doc.setFont('helvetica','bold');ink();doc.text(T('OS '+o.numero),W-M,y+5.5,{align:'right'});doc.setFont('helvetica','normal');gray();doc.text(T(fmtDate(o.criado)),W-M,y+10.5,{align:'right'});
+ y+=21;doc.setDrawColor(205,214,221);doc.line(M,y,W-M,y);y+=9;
+ doc.setFont('helvetica','bold');doc.setFontSize(17);ink();doc.text(T('Relatório de '+TIPOS[o.tipo].toLowerCase()),M,y);y+=6;
+ const sec=t=>{need(16);y+=5;doc.setFont('helvetica','bold');doc.setFontSize(11.5);doc.setTextColor(11,95,193);doc.text(T(t),M,y);y+=2;doc.setDrawColor(222,229,234);doc.line(M,y,W-M,y);y+=5.5};
+ const kv=(k,v,color)=>{if(v==null||v==='')return;doc.setFontSize(10);doc.setFont('helvetica','normal');const kl=doc.splitTextToSize(T(k),54);doc.setFont('helvetica',color?'bold':'normal');const lines=doc.splitTextToSize(T(String(v)),CW-58);const n=Math.max(kl.length,lines.length);need(5*n+1);doc.setFont('helvetica','normal');gray();doc.text(kl,M,y);if(color)doc.setTextColor(...color);else ink();doc.setFont('helvetica',color?'bold':'normal');doc.text(lines,M+58,y);y+=5*n+0.8};
+ const para=t=>{if(!t)return;doc.setFont('helvetica','normal');doc.setFontSize(10);ink();const lines=doc.splitTextToSize(T(t),CW);for(const l of lines){need(5);doc.text(l,M,y);y+=5}};
+ sec('Dados do serviço');kv('Cliente',o.cliente);kv('Local',o.local);kv('Equipamento',o.equipamento);if(o.tipo==='com')kv('Fluido refrigerante',o.gas);kv('Data',fmtDate(o.criado));
+ if(o.tipo==='com'){const c=calc(o),d=diag(c),u='psig';
+  sec('Câmara');kv('Temperatura de projeto',num(o.camara.tp)!=null?f1(num(o.camara.tp))+' °C':'');kv('Observações',o.camara.obs);
+  sec('Medições');kv('Pressão de sucção',o.med.ps?o.med.ps+' '+u:'');kv('Temp. tubo de sucção',o.med.ts?o.med.ts+' °C':'');kv('Pressão de descarga',o.med.pd?o.med.pd+' '+u:'');kv('Temp. tubo de líquido',o.med.tl?o.med.tl+' °C':'');kv('Temp. ambiente',o.med.ta?o.med.ta+' °C':'');kv('Corrente do compressor',o.med.ic?o.med.ic+' A':'');
+  kv('Evaporação saturada',c.te!=null?f1(c.te)+' °C':'');kv('Condensação saturada',c.tc!=null?f1(c.tc)+' °C':'');
+  if(c.dr)kv('Descarga esperada',Math.round(c.dr[0])+' a '+Math.round(c.dr[1])+' psig para '+f1(c.ta)+' °C ambiente'+(c.lap?' - alta '+(c.lap==='ok'?'dentro do esperado':c.lap==='high'?'acima do esperado':'abaixo do esperado'):''),c.lap&&c.lap!=='ok'?[160,110,0]:null);
+  kv('Superaquecimento',c.sa!=null?f1(c.sa)+' K  (faixa '+st.saMin+' a '+st.saMax+' K)':'');kv('Sub-resfriamento',c.sr!=null?f1(c.sr)+' K  (faixa '+st.srMin+' a '+st.srMax+' K)':'');
+  if(d){const col=d.sev==='ok'?[22,128,72]:d.sev==='warn'?[160,110,0]:[190,50,40];kv('Diagnóstico',d.t,col);kv('Ação recomendada',d.a)}
+  if(o.degelo.tipo||o.degelo.int||o.degelo.dur||o.degelo.fim||o.degelo.obs){sec('Degelo');kv('Tipo',o.degelo.tipo);kv('Intervalo',o.degelo.int?o.degelo.int+' h':'');kv('Duração máxima',o.degelo.dur?o.degelo.dur+' min':'');kv('Temperatura de término',o.degelo.fim?o.degelo.fim+' °C':'');kv('Observações',o.degelo.obs)}
+  if(o.queda.length){sec('Queda de temperatura');o.queda.forEach(p=>kv(fmtHora(p.t),f1(p.v)+' °C'));const q=o.queda;if(q.length>1){const h=(q[q.length-1].t-q[0].t)/36e5;if(h>0)kv('Taxa média',f1((q[0].v-q[q.length-1].v)/h)+' °C/h')}}
+ }
+ if(o.tipo==='man'){const m=o.man,cor={ok:[22,128,72],bad:[190,50,40],warn:[160,110,0]};sec('Manutenção');kv('Defeito relatado',m.defeito);kv('Diagnóstico',m.causa);kv('Serviço executado',m.servico);kv('Peças substituídas',m.pecas);if(m.situacao)kv('Situação',MAN_SIT[m.situacao][0],cor[MAN_SIT[m.situacao][1]])}
+ const fotoRows=(ps,maxH)=>{const colW=(CW-6)/2;for(let i=0;i<ps.length;i+=2){const row=ps.slice(i,i+2);const hs=row.map(p=>Math.min(maxH,colW*p.h/p.w));const rh=Math.max(...hs)+9;need(rh);
+   row.forEach((p,j)=>{const x=M+j*(colW+6);const w=Math.min(colW,hs[j]*p.w/p.h);doc.addImage(FULL[p.id]||thumbOf(p),'JPEG',x,y,w,hs[j],undefined,'FAST');if(p.legenda){doc.setFont('helvetica','normal');doc.setFontSize(8.5);ink();doc.text(doc.splitTextToSize(T(p.legenda),colW)[0],x,y+hs[j]+4.5)}});y+=rh}};
+ const ids=new Set(o.tipo==='prev'?o.prev.map(x=>x.id):[]);
+ if(o.tipo==='prev'){sec('Checklist de manutenção');const L={ok:['OK',[22,128,72]],at:['Atenção',[160,110,0]],nc:['Não conforme',[190,50,40]]};
+  o.prev.forEach(it=>{const l=it.s?L[it.s]:['Não verificado',[120,130,138]];kv(it.t,l[0]+(it.obs?' - '+it.obs:''),l[1]);const ps=o.fotos.filter(p=>p.itemId===it.id).map(p=>Object.assign({},p,{legenda:p.legenda===it.t?'':p.legenda}));if(ps.length){y+=1;fotoRows(ps,48);y+=2}})}
+ const soltas=o.fotos.filter(p=>!(p.itemId&&ids.has(p.itemId)));
+ if(soltas.length){sec('Registro fotográfico');fotoRows(soltas,72)}
+ if(o.obs){sec('Observações e recomendações');para(o.obs)}
+ need(44);y+=8;if(o.assinatura){doc.addImage(o.assinatura,'PNG',M,y,64,25);}y+=26;doc.setDrawColor(120,130,138);doc.line(M,y,M+80,y);y+=4.5;doc.setFont('helvetica','normal');doc.setFontSize(9);gray();doc.text(T((o.assinante||'Assinatura do cliente')),M,y);
+ if(st.tecnico){doc.line(W-M-80,y-4.5,W-M,y-4.5);doc.text(T(st.tecnico+' - responsável técnico'),W-M-80,y)}
+ const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setDrawColor(228,234,238);doc.line(M,H-15,W-M,H-15);let fx=M;
+  if(BRAND_PNG){try{doc.addImage(BRAND_PNG,'JPEG',M,H-12.6,7,7,'marca','FAST');fx=M+9}catch(e){}}
+  doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(46,97,120);doc.text('SnowField Tech',fx,H-8);const bw=doc.getTextWidth('SnowField Tech');
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(140,150,158);doc.text(T('  ·  Refrigeração com método'),fx+bw,H-8);doc.text(i+' / '+n,W-M,H-8,{align:'right'})}
+ const slug=String(o.cliente||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-zA-Z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'cliente';
+ return {blob:doc.output('blob'),filename:'OS-'+o.numero+'-'+slug+'.pdf'}}
+async function salvarArquivo(blob,filename){const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
+ if(dl){await dl.save({filename,data:blob});return}
+ if(window.claude&&window.claude.use)throw {code:'sem_download'};
+ const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=filename;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),60000)}
+function concluir(o){if(!o.exemplo){o.status='concluida';o.concluido=Date.now();markOS(o);if(driveOn()&&!(o.drive&&o.drive.ok))enviarDrive(o)}}
+function busy(v){['#pdfBtn','#shareBtn','#waBtn'].forEach(q=>{const b=$(q);if(b)b.disabled=v})}
+async function baixarPDF(){const o=S.cur;
+ if(!window.jspdf){toast('O gerador de PDF não carregou. Verifique a internet e abra o app de novo.');return}
+ busy(true);try{const r=buildPDF(o);await salvarArquivo(r.blob,r.filename);concluir(o);toast('PDF salvo no aparelho.')}
+ catch(e){const code=e&&e.code;toast(code==='declined'?'Download cancelado.':code==='rate_limited'?'Já existe um download aguardando confirmação.':code==='sem_download'?'Salvar arquivos não está disponível nesta visualização.':'Não foi possível gerar o PDF. Tente de novo.')}
+ finally{busy(false)}}
+/* mensagem padrão que acompanha o relatório */
+function msgPadrao(o){const st=S.settings;const l=['Olá! Segue em anexo o relatório de '+TIPOS[o.tipo].toLowerCase()+' (OS '+o.numero+')'+(o.cliente?' — '+o.cliente:'')+(o.equipamento?', '+o.equipamento:'')+'.'];
+ if(o.tipo==='man'&&o.man&&o.man.situacao)l.push('Situação: '+MAN_SIT[o.man.situacao][0]+'.');
+ if(o.tipo==='com'){const d=diag(calc(o));if(d)l.push('Diagnóstico: '+d.t+'.')}
+ {const c=cliOf(o);if(c&&c.sharedWith&&c.driveUrl)l.push('Todos os seus relatórios ficam nesta pasta: '+c.driveUrl)}
+ l.push('Qualquer dúvida, estou à disposição.');const ass=[st.tecnico,st.empresa,st.telefone].filter(Boolean);if(ass.length)l.push('',ass.join(' · '));return l.join('\n')}
+function waLink(o){return 'https://wa.me/?text='+encodeURIComponent(msgPadrao(o))}
+/* WhatsApp: monta o PDF na hora do toque e abre a tela de compartilhar com o arquivo e a mensagem; sem suporte, baixa o PDF e oferece abrir o WhatsApp com a mensagem */
+function enviarPDF(){const o=S.cur;
+ if(!window.jspdf){toast('O gerador de PDF não carregou. Verifique a internet e abra a página de novo.');return}
+ let r;try{r=buildPDF(o)}catch(e){toast('Não foi possível gerar o PDF. Tente de novo.');return}
+ let file=null;try{file=new File([r.blob],r.filename,{type:'application/pdf'})}catch(e){}
+ const ok=file&&navigator.share&&navigator.canShare&&navigator.canShare({files:[file],text:'x'});
+ if(!ok){semEnvio(r);return}
+ navigator.share({files:[file],text:msgPadrao(o)}).then(()=>{concluir(o);toast('Relatório enviado.')}).catch(e=>{if(e&&e.name==='AbortError')return;semEnvio(r)})}
+async function semEnvio(r){const o=S.cur;
+ busy(true);try{await salvarArquivo(r.blob,r.filename);concluir(o);S.waPend=o.id;render();toast('PDF salvo. Agora toque em WhatsApp.')}
+ catch(e){const code=e&&e.code;toast(code==='declined'?'Download cancelado.':code==='sem_download'?'Este aparelho não deixa anexar direto nem salvar arquivos aqui.':'Não foi possível salvar o PDF. Tente de novo.')}finally{busy(false)}}
+
+/* ---------- eventos ---------- */
+const ACT={
+ go:el=>go(el.dataset.to),
+ comecar:()=>{S.settings.visto=true;markS();go(S.settings.empresa?'home':'empresa')},
+ entrar:()=>{S.settings.visto=true;markS();go('home')},
+ nova:el=>{const t=el&&el.dataset.t;if(!t||!NOVOS.includes(t)){escolherTipo();return}
+  S.novo={cliente:'',local:'',equipamento:'',gas:'R22',tipo:t,etiqueta:null,clienteId:'',equipId:'',modelo:'padrao'};
+  const c=el.dataset.cli&&S.clientes.find(x=>x.id===el.dataset.cli);if(c)Object.assign(S.novo,{clienteId:c.id,cliente:c.nome,local:c.local||''});S.novoErr='';go('nova')},
+ pickCli:el=>{const c=S.clientes.find(x=>x.id===el.dataset.id);if(!c)return;Object.assign(S.novo,{clienteId:c.id,cliente:c.nome,local:S.novo.local||c.local||'',equipId:'',equipamento:''});S.novoErr='';render()},
+ trocarCli:()=>{Object.assign(S.novo,{clienteId:'',cliente:'',equipId:'',equipamento:''});render();const i=$('#f_novo_cliente');if(i)i.focus()},
+ pickEq:el=>{const id=el.dataset.id;S.novo.equipId=id;S.novo.equipamento='';if(id){const c=S.clientes.find(x=>x.id===S.novo.clienteId),e=c&&c.equips.find(x=>x.id===id);if(e&&e.gas)S.novo.gas=e.gas}render()},
+ novoModelo:el=>{S.novo.modelo=el.dataset.m;render()},
+ addItem:()=>{const i=$('#f_tmp__item');const v=(i&&i.value||'').trim();if(!v){toast('Digite o nome do item.');if(i)i.focus();return}if(i)i.blur();S.cur.prev.unshift({id:uid(),t:v,s:null,obs:''});S.tmp._item='';markOS(S.cur);render();toast('Item “'+v+'” adicionado.');const n=$('#f_tmp__item');if(n)n.focus()},
+ delItem:el=>{const i=+el.dataset.i,it=S.cur.prev[i];if(!it)return;const n=S.cur.fotos.filter(p=>p.itemId===it.id).length;
+  confirmBox('Remover item?','“'+it.t+'” sai do checklist desta ordem.'+(n?' As '+n+' foto(s) dele continuam na etapa Fotos.':''),'Remover',()=>{S.cur.prev.splice(i,1);S.cur.fotos.forEach(p=>{if(p.itemId===it.id){p.itemId=null}});markOS(S.cur);render()})},
+ salvarModelo:()=>promptBox('Salvar como modelo','Nome do modelo','Ex.: Preventiva mensal mercado','Salvar',v=>{const ms=S.settings.modelos||[];if(norm(v)===norm(MODELO_PADRAO.nome)||ms.some(m=>norm(m.nome)===norm(v)))return 'Já existe um modelo com esse nome.';
+  S.settings.modelos=[...ms,{id:uid(),nome:v,itens:S.cur.prev.map(x=>x.t)}];markS();toast('Modelo “'+v+'” salvo. Ele aparece ao criar uma preventiva.')}),
+ delModelo:el=>{const m=(S.settings.modelos||[]).find(x=>x.id===el.dataset.id);if(!m)return;confirmBox('Excluir modelo?','O modelo “'+m.nome+'” deixa de aparecer em novas preventivas. Ordens já criadas não mudam.','Excluir',()=>{S.settings.modelos=S.settings.modelos.filter(x=>x.id!==m.id);markS();render()})},
+ novoCli:()=>promptBox('Novo cliente','Nome do cliente','Ex.: Mercado Boa Vista','Cadastrar',v=>{const ex=S.clientes.find(c=>norm(c.nome)===norm(v));if(ex){S.curCli=ex;go('cliente');toast('Esse cliente já está cadastrado.');return}
+  const c={id:uid(),nome:v,local:'',equips:[]};S.clientes.push(c);markC();S.curCli=c;go('cliente')}),
+ abrirCli:el=>{S.curCli=S.clientes.find(c=>c.id===el.dataset.id);if(S.curCli)go('cliente')},
+ addEq:()=>{const i=$('#f_tmp__eq');const v=(i&&i.value||'').trim();if(!v){toast('Digite o nome do equipamento.');if(i)i.focus();return}const c=S.curCli;
+  if(c.equips.some(e=>norm(e.nome)===norm(v))){toast('Esse equipamento já está cadastrado para este cliente.');return}if(i)i.blur();c.equips.push({id:uid(),nome:v,gas:''});S.tmp._eq='';markC();render()},
+ delEq:el=>{const c=S.curCli,e=c.equips.find(x=>x.id===el.dataset.id);if(!e)return;confirmBox('Remover equipamento?','“'+e.nome+'” sai do cadastro. As ordens antigas dele não são apagadas.','Remover',()=>{c.equips=c.equips.filter(x=>x.id!==e.id);markC();render()})},
+ novaCli:()=>escolherTipo(S.curCli.id),
+ manSit:el=>{const m=S.cur.man;m.situacao=m.situacao===el.dataset.s?'':el.dataset.s;markOS(S.cur);render()},
+ atalho:el=>{if(el.dataset.t==='ciclo'){S.cyStep=0;go('ciclo');return}ACT.nova(el)},
+ cyModo:el=>{if((S.cyModo||'ref')===el.dataset.m)return;S.cyModo=el.dataset.m;S.cyStep=0;render()},
+ cyStep:el=>{S.cyStep=+el.dataset.i;cyShow();if(el.closest('.cy-sum')){const s=$('.cy-stage');if(s)s.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}},
+ cyPrev:()=>{S.cyStep--;cyShow()},
+ cyNext:()=>{S.cyStep++;cyShow()},
+ navTab:el=>{const k=el.dataset.k;if(k==='empresa'){go('empresa');return}S.homeTab=k;S.filtroCliente='';render(true)},
+ verTodas:()=>{S.verTodas=!S.verTodas;render()},
+ filtroCliente:el=>{S.filtroCliente=el.dataset.c;render()},
+ novoGas:el=>{S.novo.gas=el.dataset.g;render()},
+ criar:()=>{const n=S.novo;let cli=n.clienteId&&S.clientes.find(c=>c.id===n.clienteId);
+  if(!cli){const nome=n.cliente.trim();if(!nome){S.novoErr='Informe o nome do cliente para criar a ordem.';render();const i=$('#f_novo_cliente');if(i)i.focus();return}
+   cli=S.clientes.find(c=>norm(c.nome)===norm(nome));if(!cli){cli={id:uid(),nome,local:n.local.trim(),equips:[]};S.clientes.push(cli)}}
+  if(!cli.local&&n.local.trim())cli.local=n.local.trim();
+  let eq=n.equipId&&cli.equips.find(e=>e.id===n.equipId);
+  if(!eq&&n.equipamento.trim()){eq=cli.equips.find(e=>norm(e.nome)===norm(n.equipamento));if(!eq){eq={id:uid(),nome:n.equipamento.trim(),gas:n.tipo==='com'?n.gas:''};cli.equips.push(eq)}}
+  if(eq&&!eq.gas&&n.tipo==='com')eq.gas=n.gas;markC();
+  const o=novaOS({numero:pad(S.settings.seq),cliente:cli.nome,clienteId:cli.id,local:n.local.trim()||cli.local||'',equipamento:eq?eq.nome:'',equipId:eq?eq.id:'',gas:n.gas,tipo:n.tipo});
+  if(n.tipo==='prev')o.prev=itensDe(n.modelo);
+  S.settings.seq++;markS();S.list.push(o);dirtyIds=true;markOS(o);S.cur=o;S.step=0;S.momento='antes';go('serv')},
+ abrir:el=>{S.cur=S.list.find(o=>o.id===el.dataset.id);if(!S.cur)return;normOS(S.cur);S.step=0;S.momento='antes';go(S.cur.status==='concluida'?'rel':'serv')},
+ step:el=>{S.step=+el.dataset.i;render(true)},
+ nextStep:()=>{S.step++;render(true)},
+ degTipo:el=>{S.cur.degelo.tipo=el.dataset.t;markOS(S.cur);render()},
+ addQ:()=>{const i=$('#f_tmp__q');const v=num(i&&i.value);if(v==null){toast('Digite a temperatura antes de registrar.');return}if(i)i.blur();S.cur.queda.push({t:Date.now(),v});S.tmp._q='';markOS(S.cur);render()},
+ delQ:el=>{S.cur.queda.splice(+el.dataset.i,1);markOS(S.cur);render()},
+ chk:el=>{const it=S.cur.prev[+el.dataset.i];it.s=it.s===el.dataset.s?null:el.dataset.s;markOS(S.cur);render()},
+ momento:el=>{S.momento=el.dataset.m;render()},
+ delFoto:el=>{const f=S.cur.fotos[+el.dataset.i];if(f)delFull(f.id);S.cur.fotos.splice(+el.dataset.i,1);markOS(S.cur);render()},
+ limparSig:()=>{S.cur.assinatura=null;markOS(S.cur);render()},
+ pdf:()=>baixarPDF(),
+ driveSend:()=>enviarDrive(S.cur,!!(S.cur.drive&&S.cur.drive.ok)),
+ nuvemEscolher:()=>nuvemModal(),
+ nuvemDesligar:()=>{S.settings.nuvem='';if(S.settings.drive)S.settings.drive.on=false;markS();render();toast('Nuvem desativada.')},
+ icloudSalvar:()=>salvarICloud(),
+ driveLigar:async el=>{el.disabled=true;el.textContent='Conectando…';try{await ensureRoot();S.settings.drive.on=true;markS();render();toast('Google Drive ativado. As próximas ordens concluídas vão para lá.')}catch(e){render();toast(driveErr(e))}},
+
+ driveTodas:async el=>{const L=S.list.filter(o=>o.status==='concluida'&&!(o.drive&&o.drive.ok));el.disabled=true;let ok=0;
+  for(const [i,o] of L.entries()){el.textContent='Enviando '+(i+1)+' de '+L.length+'…';await enviarDrive(o);if(o.drive&&o.drive.ok)ok++;else{toast(S.drv[o.id]&&S.drv[o.id].msg||'Não foi possível enviar.');break}soltaFull()}
+  render();if(ok)toast(ok+' ordem'+(ok>1?'s':'')+' enviada'+(ok>1?'s':'')+' ao Drive.')},
+ driveShare:async el=>{const c=S.curCli,em=String(c.email||'').trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){toast('Digite um e-mail válido do cliente.');const i=$('#f_cli_email');if(i)i.focus();return}
+  el.disabled=true;el.textContent='Compartilhando…';try{const id=await ensureCli(c);await dcall('share_file',{fileId:id,emailAddress:em,role:'reader'});c.sharedWith=em;markC();render();toast('Pasta compartilhada. O cliente recebe um aviso do Google por e-mail.')}
+  catch(e){render();toast(driveErr(e))}},
+ liberarOS:()=>{const o=S.cur;const b=fotosBytes(o);confirmBox('Liberar espaço desta ordem?','Apaga '+fmtMB(b)+' de fotos grandes deste aparelho. As miniaturas e os dados ficam. O PDF já enviado continua completo; um PDF novo sairia com fotos pequenas.','Liberar',()=>{liberar(o);soltaFull();S.fullReady=null;render();toast(fmtMB(b)+' liberados.')})},
+ liberarUma:el=>{const o=S.list.find(x=>x.id===el.dataset.id);if(!o)return;const b=fotosBytes(o);confirmBox('Liberar espaço da OS '+o.numero+'?','Apaga '+fmtMB(b)+' de fotos grandes. As miniaturas e os dados ficam.','Liberar',()=>{liberar(o);render();estimar();toast(fmtMB(b)+' liberados.')})},
+ liberarTodas:()=>{const L=concluidasPesadas(),b=L.reduce((t,o)=>t+fotosBytes(o),0);if(!b)return;confirmBox('Liberar espaço das concluídas?','Apaga '+fmtMB(b)+' de fotos grandes de '+L.length+' ordem'+(L.length>1?'s':'')+' concluída'+(L.length>1?'s':'')+'. As miniaturas, os dados e os PDFs já enviados não mudam.','Liberar tudo',()=>{L.forEach(liberar);render();estimar();toast(fmtMB(b)+' liberados.')})},
+ autoLimpar:el=>{S.settings.autoLimpar=+el.dataset.d;markS();render();if(S.settings.autoLimpar)autoLimpeza()},
+ enviar:()=>enviarPDF(),
+ recalc:()=>{if(!PTR.busy)ptrRun()},
+ delOS:()=>confirmBox('Excluir esta ordem?','A OS '+S.cur.numero+' e todas as fotos serão apagadas deste aparelho.','Excluir',async()=>{const o=S.cur;o.fotos.forEach(f=>delFull(f.id));S.list=S.list.filter(x=>x.id!==o.id);dirty.delete(o.id);await idbDel('os:'+o.id);dirtyIds=true;S.cur=null;go('home');toast('Ordem excluída.')}),
+ apagarTudo:()=>confirmBox('Apagar todos os dados?','Ordens, fotos, assinaturas e dados da empresa serão apagados deste aparelho.','Apagar tudo',async()=>{for(const o of S.list){o.fotos.forEach(f=>delFull(f.id));await idbDel('os:'+o.id)}S.list=[];S.clientes=[];await idbSet('clientes',[]);S.settings=Object.assign({},DEF,{visto:true});await idbSet('settings',S.settings);await idbSet('ids',[]);go('home');toast('Dados apagados.')}),
+};
+S.tmp={_q:'',_item:'',_eq:''};
+const app=$('#app');
+app.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el||el.disabled)return;const f=ACT[el.dataset.act];if(f){e.preventDefault();f(el)}});
+function onInput(e){const el=e.target;
+ if(el.dataset.photo){if(e.type==='change')onPhoto(el).finally(()=>{el.value=''});return}
+ const p=el.dataset.bind;if(!p)return;const sc=el.dataset.scope;
+ if(el.type==='radio'){if(!el.checked)return}
+ if(sc==='tmp'){if(el.isConnected)S.tmp[p]=el.value;return}
+ if(sc==='novo'&&p==='cliente'){S.novo.cliente=el.value;if(e.type==='input'){const g=$('#sug');if(g)g.innerHTML=sugHTML(el.value)}return}
+ if(sc==='cli'){setPath(S.curCli,p,el.value);markC();if(p==='nome'&&el.value.trim()){S.list.forEach(o=>{if(o.clienteId===S.curCli.id){o.cliente=el.value.trim();markOS(o)}})}return}
+ setPath(scopeObj(sc),p,el.value);
+ if(sc==='os')markOS(S.cur);else if(sc==='settings')markS();
+ if(sc==='os'&&p.startsWith('med.')){const c=$('#calc');if(c)c.innerHTML=calcHTML(S.cur)}
+ if(p==='degelo.int'){const d=$('#degInfo'),n=num(el.value);if(d)d.textContent=n&&n>0?f1(24/n).replace(',0','')+' degelos por dia':'Informe o intervalo para ver quantos degelos por dia.'}
+}
+/* resposta ao toque: marca o botão por no mínimo 140 ms (toque rápido também aparece) e vibra no Android */
+const PRESS_SEL='.tipo-opt,.segbtn,button,.btn,.icon-btn,.chip,.oscard,.radio,.cp';let pressEl=null,pressT=0;
+function pressOff(){const el=pressEl;if(!el)return;pressEl=null;setTimeout(()=>el.classList.remove('press'),Math.max(0,140-(Date.now()-pressT)))}
+document.addEventListener('pointerdown',e=>{const el=e.target.closest(PRESS_SEL);if(!el||el.disabled)return;pressOff();pressEl=el;pressT=Date.now();el.classList.add('press');
+ if(e.pointerType==='touch'&&navigator.vibrate)try{navigator.vibrate(8)}catch(_){}},{passive:true});
+['pointerup','pointercancel','dragstart'].forEach(t=>document.addEventListener(t,pressOff,{passive:true}));
+window.addEventListener('scroll',()=>{if(pressEl&&Date.now()-pressT>60){pressEl.classList.remove('press');pressEl=null}},{passive:true});
+app.addEventListener('input',onInput);app.addEventListener('change',onInput);
+/* puxar para atualizar (etapa Medições) */
+function isMed(){return S.view==='serv'&&S.cur&&STEPS[S.cur.tipo][S.step]==='Medições'}
+function recalc(){if(!isMed())return;const a=document.activeElement;if(a&&a.blur&&a.tagName==='INPUT')a.blur();
+ app.querySelectorAll('input[data-bind^="med."]').forEach(el=>setPath(S.cur,el.dataset.bind,el.value));markOS(S.cur);
+ const c=$('#calc');if(c){c.innerHTML=calcHTML(S.cur);c.classList.remove('flash');void c.offsetWidth;c.classList.add('flash')}}
+const PTR={y0:null,d:0,busy:false},PTR_MIN=64;
+function ptrSet(d,anim){const el=$('#ptr');el.classList.toggle('anim',!!anim);el.style.opacity=Math.min(1,d/36);el.style.transform=`translate(-50%,${Math.round(d-80)}px)`;
+ el.querySelector('svg').style.transform=el.classList.contains('spin')?'':`rotate(${Math.round(d*3)}deg)`;if(!PTR.busy)$('#ptrT').textContent=d>=PTR_MIN?'Solte para atualizar':'Puxe para atualizar'}
+function ptrRun(){const el=$('#ptr');PTR.busy=true;el.classList.add('spin');$('#ptrT').textContent='Atualizando…';ptrSet(PTR_MIN,true);
+ setTimeout(()=>{recalc();el.classList.remove('spin');$('#ptrT').textContent='Cálculo atualizado';setTimeout(()=>{PTR.busy=false;ptrSet(0,true)},700)},400)}
+document.addEventListener('touchstart',e=>{PTR.y0=null;if(PTR.busy||!isMed()||window.scrollY>2||e.touches.length>1||e.target.closest('.sigwrap'))return;PTR.y0=e.touches[0].clientY;PTR.d=0},{passive:true});
+document.addEventListener('touchmove',e=>{if(PTR.y0==null)return;const dy=e.touches[0].clientY-PTR.y0;if(dy<=0||window.scrollY>2){PTR.d=0;ptrSet(0);return}
+ PTR.d=Math.min(110,dy*.55);if(e.cancelable)e.preventDefault();ptrSet(PTR.d)},{passive:false});
+document.addEventListener('touchend',()=>{if(PTR.y0==null)return;PTR.y0=null;if(PTR.d>=PTR_MIN)ptrRun();else ptrSet(0,true);PTR.d=0});
+document.addEventListener('touchcancel',()=>{if(PTR.y0==null)return;PTR.y0=null;PTR.d=0;ptrSet(0,true)});
+app.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='f_tmp__q'){e.preventDefault();ACT.addQ()}
+ if(e.key==='Enter'&&e.target.id==='f_tmp__item'){e.preventDefault();ACT.addItem()}
+ if(e.key==='Enter'&&e.target.id==='f_tmp__eq'){e.preventDefault();ACT.addEq()}
+ if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('cp')){e.preventDefault();ACT.cyStep(e.target)}});
+document.addEventListener('keydown',e=>{if(S.view!=='ciclo'||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;if(e.key==='ArrowRight')ACT.cyNext();if(e.key==='ArrowLeft')ACT.cyPrev()});
+
+/* ---------- início ---------- */
+async function boot(){
+ render();prepBrand();initMCP();
+ await idbOpen();
+ const s=await idbGet('settings');if(s)S.settings=Object.assign({},DEF,s);delete S.settings.unidade;Object.assign(S.settings,{saMin:DEF.saMin,saMax:DEF.saMax,srMin:DEF.srMin,srMax:DEF.srMax});
+ let ids=await idbGet('ids');
+ if(!ids){const ex=exemplo();S.list=[ex];dirtyIds=true;markOS(ex)}
+ else{const arr=await Promise.all(ids.map(id=>idbGet('os:'+id)));S.list=arr.filter(Boolean)}
+ S.list.forEach(normOS);
+ const cl=await idbGet('clientes');if(Array.isArray(cl))S.clientes=cl;
+ S.list.forEach(o=>{if(linkOS(o)){markOS(o);markC()}});
+ render();
+ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+ await migrarFotos();await autoLimpeza();if(S.view==='home'||S.view==='empresa')render();
+}
+/* fotos antigas (guardadas como texto, 1400 px) viram binário de 1280 px + miniatura, uma única vez */
+async function migrarFotos(){const old=[];S.list.forEach(o=>o.fotos.forEach(p=>{if(p.data&&!p.thumb)old.push([o,p])}));if(!old.length)return;
+ let antes=0,depois=0,n=0;toast('Otimizando '+old.length+' foto'+(old.length>1?'s':'')+' antiga'+(old.length>1?'s':'')+'…');
+ for(const [o,p] of old){try{const img=await new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=p.data});
+   const r=await makePhoto(img,p.id||uid());antes+=p.data.length;depois+=r.size+r.thumb.length;Object.assign(p,r);delete p.data;markOS(o);n++}catch(e){}}
+ await flush();if(n)toast(n+' foto'+(n>1?'s':'')+' otimizada'+(n>1?'s':'')+': '+fmtMB(Math.max(0,antes-depois))+' a menos.')}
+window.__snow={satT,calc,diag,S};
+boot();
+})();
+</script>
+<style>
+.nova-versao{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;width:min(440px,calc(100% - 32px));display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-radius:18px;background:#14272F;border:1px solid var(--accent-line);box-shadow:0 10px 30px rgba(0,0,0,.4);font-size:14px;font-weight:500}
+.nova-versao span{flex:1}
+.nova-versao .btn{min-height:42px;padding:0 16px;font-size:14px}
+#instalar .btn{min-height:42px;padding:0 16px;font-size:14px;flex:none}
+#instalar .ck-x{margin:0}
+.passos{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;color:var(--soft)}
+</style>
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var guardado=function(k){try{return localStorage.getItem(k)}catch(e){return null}};
+var guardar=function(k,v){try{localStorage.setItem(k,v)}catch(e){}};
+var instalado=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+var ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var pedido=null;
+
+/* cartão "Instale o app" no topo da tela inicial */
+function pintar(){
+  var c=$('#instalar');
+  if(instalado||guardado('sf-instalar-dispensado')||(!pedido&&!ios)){if(c)c.remove();return}
+  var main=$('.home .hm-main');if(!main||c)return;
+  var s=document.createElement('section');s.id='instalar';s.className='space';
+  s.innerHTML='<div><b>Instale o SnowField Tech</b><span>Abre como app, funciona sem internet e guarda seus dados com segurança.</span></div>'+
+    '<button class="btn primary" id="btnInstalar">Instalar</button>'+
+    '<button class="ck-x" id="btnInstalarX" aria-label="Agora não"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+  main.insertBefore(s,main.firstChild);
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('#btnInstalarX')){guardar('sf-instalar-dispensado','1');pintar();return}
+  if(!e.target.closest('#btnInstalar'))return;
+  if(pedido){pedido.prompt();pedido.userChoice.then(function(r){if(r&&r.outcome==='accepted'){pedido=null;pintar()}});return}
+  var m=$('#modal');
+  m.innerHTML='<div class="glass" role="dialog" aria-modal="true" aria-labelledby="it"><h2 id="it" class="h2">Instalar no iPhone</h2>'+
+    '<ol class="passos"><li>Abra este endereço no <b>Safari</b>.</li><li>Toque em <b>Compartilhar</b>, o quadrado com a seta para cima.</li><li>Role e toque em <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b>. O ícone do floco aparece na tela inicial.</li></ol>'+
+    '<p class="note">Instalado, o iPhone não apaga os dados do app por falta de uso.</p><div class="acts"><button class="btn primary" data-m="no">Entendi</button></div></div>';
+  m.hidden=false;m.onclick=function(ev){if(ev.target===m||ev.target.closest('[data-m]'))m.hidden=true};
+});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();pedido=e;pintar()});
+window.addEventListener('appinstalled',function(){instalado=true;pedido=null;pintar()});
+new MutationObserver(pintar).observe($('#app'),{childList:true});
+
+/* nova versão: avisa e atualiza quando o técnico tocar */
+if('serviceWorker' in navigator&&location.protocol!=='file:'){
+  var recarregando=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(recarregando)return;recarregando=true;location.reload()});
+  function aviso(reg){
+    if($('#novaVersao'))return;
+    var d=document.createElement('div');d.id='novaVersao';d.className='nova-versao';d.setAttribute('role','status');
+    d.innerHTML='<span>Nova versão do app disponível.</span><button class="btn primary">Atualizar</button>';
+    d.querySelector('button').onclick=function(){this.disabled=true;this.textContent='Atualizando…';setTimeout(function(){if(reg.waiting)reg.waiting.postMessage('atualizar')},700)};
+    document.body.appendChild(d);
+  }
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      if(reg.waiting&&navigator.serviceWorker.controller)aviso(reg);
+      reg.addEventListener('updatefound',function(){var w=reg.installing;if(!w)return;w.addEventListener('statechange',function(){if(w.state==='installed'&&navigator.serviceWorker.controller)aviso(reg)})});
+      setInterval(function(){reg.update()},60*60*1000);
+      document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')reg.update()});
+    }).catch(function(){});
+  });
+}
+})();
+</script>
+</body>
+</html>
